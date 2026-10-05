@@ -3,16 +3,16 @@
 
 Un carnet par binôme, rempli au fil de l'eau avec vos propres mots. Une phrase honnête (« j'ai essayé X, j'ai vu Y, je ne comprends pas pourquoi ») vaut mieux qu'une phrase parfaite recopiée. Aucune donnée personnelle, aucune clé ni jeton, ni l'adresse complète que `dsh web` affiche (elle contient un jeton). C'est aussi votre journal de décisions (astuce 13) : ce que vous avez demandé, ce qui a cassé, ce que vous avez refusé, et pourquoi.
 
-Binôme :
+Binôme : Arthur BRIOT et Bouchra BENBELKACEM
 
-Thème provisoire et public visé :
+Thème provisoire et public visé : un assistant pour aider les spectateurs d'un cinéma indépendant à choisir une séance.
 
 Trois questions auxquelles l'assistant pourrait répondre :
-1.Quelles films sont disponibles ?
-2.Résumer d'un film ?
-3.Quelles sont les horraires d'un film ?
+1. Quels films sont disponibles ?
+2. Peux-tu résumer un film ?
+3. Quels sont les horaires d'un film ?
 
-Rôles de départ et moments d'échange :
+Rôles de départ et moments d'échange : Arthur manipule et le bouchra vérifie, puis nous échangeons les rôles après environ 20 minutes.
 
 ## Cahier personnel (remis par le formateur en J1-01)
 
@@ -26,7 +26,7 @@ Recopiez les valeurs telles que le formateur vous les a remises. Ne les changez 
 
 Notez le dossier de lancement, la commande et sa sortie exacte, surtout quand un outil a bloqué.
 
-- Dossier :
+- Dossier : /atelier
 - Commande et résultat : dsh web -> "Serveur démarré"
 
 Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est réunie, collez la preuve (texte, commande ou phrase), puis notez ce que vous avez prédit, essayé, observé, et une difficulté qui reste.
@@ -35,11 +35,11 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-01 · 🧭 Équipage — [fiche](checkpoints/J1-01-equipage.md)
 
-- [ ] Validé
-- Preuve (page de départ affichée sur votre poste, cahier personnel recopié ci-dessus) :
-- Le `p#status` est-il vide dans le HTML ? Qui écrit sa phrase ?
-- Décision prise ensemble :
-- Difficulté qui reste :
+- [X] Validé
+- Preuve (page de départ affichée sur votre poste, cahier personnel recopié ci-dessus) : la page de départ s'affiche à `http://127.0.0.1:3000`. Nous avons repéré les fichiers `index.html`, `styles.css` et `app.js`, ainsi que les éléments `main`, `h1` et `p#status`.
+- Le `p#status` est-il vide dans le HTML ? Qui écrit sa phrase ? Oui, il est vide dans le HTML. Le fichier `js/app.js` écrit la phrase « Votre point de départ est prêt. » avec JavaScript.
+- Décision prise ensemble : créer un assistant destiné aux spectateurs d'un cinéma indépendant et échanger les rôles régulièrement.
+- Difficulté qui reste : Créer le chatbot et réfélchir à comment le structuré
 
 ### J1-02 · 💬 Premier prompt — [fiche](checkpoints/J1-02-premier-prompt.md)
 

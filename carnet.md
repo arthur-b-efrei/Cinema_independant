@@ -45,7 +45,7 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 - [X] Validé
 - Preuve : `essais-n0/chatbot-v1.html` s'ouvre ; le prompt et la première réponse sont collés ci-dessous, en entier, sans donnée personnelle.
-- Mon prompt, tel quel :
+- Mon prompt, tel quel : Fais-moi un chatbot sur le cinéma indépendant qui peut notamment renseigner sur les films disponibles, les horaires des séances et donner un résumé des films. Je veux tout dans une seule page HTML que je peux ouvrir directement dans mon navigateur.
 - La première réponse du chat (texte et code), telle quelle : Bonjour ! 🎬 Comment puis-je vous aider ? Vous pouvez me demander les films disponibles, les horaires ou le résumé d'un film.
 - Trois lignes d'observation (ce que j'ai vu en utilisant la page) :Le chatbot répond correctement au premier message, mais après le deuxième échange, l’interface se bloque et il n’est plus possible de continuer la conversation.  
 - Difficulté qui reste :  Il faudrait corriger ce problème afin que le chatbot reste fonctionnel après plusieurs messages. 
@@ -71,11 +71,22 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-04 · 🎲 Même prompt, autre réponse — [fiche](checkpoints/J1-04-meme-prompt.md)
 
-- [ ] Validé
-- Le prompt de référence (identique aux trois essais) :
+- [X] Validé
+- Le prompt de référence (identique aux trois essais) : Fais-moi un chatbot sur le cinéma indépendant qui peut notamment renseigner sur les films disponibles, les horaires des séances et donner un résumé des films. Je veux tout dans une seule page HTML que je peux ouvrir directement dans mon navigateur.
 - Le tableau des écarts (trois colonnes A, B, C ; au moins quatre critères ; des faits, pas des impressions) :
-- Une phrase de conclusion (ce que ces écarts autorisent, ce qu'ils interdisent de supposer) :
-- Difficulté qui reste :
+
+  | Critère | A | B | C |
+  |---|---|---|---|
+  | Structure du code | Un seul fichier ; CSS dans `<head>` et script en bas ; 4 films fictifs | Un seul fichier ; CSS dans `<head>` et script en bas ; 5 films | Un seul fichier ; CSS dans `<head>` et script en bas ; 6 films |
+  | Message sur le thème | Affiche les 4 films de Hors-Champ avec leurs informations | Affiche les 5 films de CinéSillage et leurs séances | Affiche les 6 films du Rayon avec leur genre et leur durée |
+  | Message hors thème | Répond qu'il n'a pas compris et propose films, horaires ou résumé | Répond qu'il n'a pas compris et propose films, horaires, résumé ou recommandation | Répond qu'il n'a pas compris et propose films, horaires, résumé ou recommandation |
+  | Message vide | Refusé sans ajouter de message | Refusé sans ajouter de message | Refusé sans ajouter de message |
+  | Après rechargement F5 | La conversation recommence au message d'accueil | La conversation recommence au message d'accueil | La conversation recommence au message d'accueil |
+  | Affichage à 360 px | La barre latérale disparaît sous 780 px | La barre latérale disparaît sous 780 px | La page passe sur une colonne sous 850 px et s'adapte encore sous 480 px |
+  | Nom et ton | « Hors-Champ », bot nommé Alma, ton d'une ouvreuse | « CinéSillage », bot nommé Sillage, ton de guide | « Le Rayon », ton de guide de cinéma |
+
+- Une phrase de conclusion (ce que ces écarts autorisent, ce qu'ils interdisent de supposer) : les trois réponses permettent d'espérer les mêmes fonctions principales, mais leurs différences de noms, de films, de mise en page et de réponses interdisent de supposer qu'un même prompt produit toujours exactement le même résultat.
+- Difficulté qui reste : les trois pages n'enregistrent pas la conversation après un rechargement.
 
 ## L'agent (N1 Demander)
 

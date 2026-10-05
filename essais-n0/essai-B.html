@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CinéSillage, assistant cinéma indépendant : films, résumés et horaires.">
+  <title>CinéSillage — Cinéma indépendant</title>
+  <style>
+    :root {
+      --ink: #f7f2e8;
+      --muted: #aaa7a0;
+      --night: #10100f;
+      --panel: #191917;
+      --panel-2: #22221f;
+      --line: rgba(255, 255, 255, .09);
+      --orange: #ff7548;
+      --yellow: #f3c75f;
+      --green: #9fbd8a;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255, 117, 72, .12), transparent 27rem),
+        radial-gradient(circle at 92% 85%, rgba(159, 189, 138, .08), transparent 25rem),
+        var(--night);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      min-height: calc(100vh - 48px);
+      margin: 24px auto;
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: rgba(25, 25, 23, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding: 28px;
+      border-right: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 117, 72, .06), transparent 35%),
+        #151514;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      letter-spacing: -.02em;
+    }
+
+    .brand-mark {
+      width: 37px;
+      height: 37px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #141412;
+      background: var(--orange);
+      box-shadow: 0 0 0 5px rgba(255, 117, 72, .1);
+      font-size: 17px;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 400 clamp(34px, 5vw, 62px)/.98 Georgia, "Times New Roman", serif;
+      letter-spacing: -.045em;
+    }
+
+    .intro {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .now-playing {
+      display: grid;
+      gap: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: #77756f;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .film-mini {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 43px 1fr auto;
+      gap: 11px;
+      align-items: center;
+      padding: 9px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .film-mini:hover, .film-mini:focus-visible {
+      outline: none;
+      border-color: var(--line);
+      background: var(--panel-2);
+      transform: translateX(3px);
+    }
+
+    .poster-mini {
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      font-size: 19px;
+    }
+
+    .film-mini strong {
+      display: block;
+      margin-bottom: 4px;
+      font: 400 15px/1.15 Georgia, serif;
+    }
+
+    .film-mini small { color: #8a8882; }
+    .arrow { color: #5e5c57; }
+
+    .info-card {
+      margin-top: auto;
+      padding: 15px;
+      border: 1px solid rgba(243, 199, 95, .16);
+      border-radius: 14px;
+      background: rgba(243, 199, 95, .055);
+      color: #b6b2a7;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .info-card strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--yellow);
+      font-size: 12px;
+    }
+
+    .main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 48px);
+      min-height: 650px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 26px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #b7b4ac;
+      font-size: 13px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(159, 189, 138, .1);
+    }
+
+    .date {
+      color: #77756f;
+      font-size: 12px;
+      text-transform: capitalize;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px clamp(20px, 5vw, 58px);
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 720px;
+      margin-bottom: 18px;
+      animation: rise .32s ease both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .message.user {
+      margin-left: auto;
+      justify-content: flex-end;
+    }
+
+    .avatar {
+      flex: 0 0 32px;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      margin-top: 3px;
+      border-radius: 50%;
+      color: #181816;
+      background: var(--orange);
+      font-size: 13px;
+    }
+
+    .bubble {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 6px 18px 18px 18px;
+      background: var(--panel-2);
+      color: #dedbd3;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .user .bubble {
+      border-color: rgba(255, 117, 72, .22);
+      border-radius: 18px 18px 6px 18px;
+      background: rgba(255, 117, 72, .12);
+      color: #f8eee8;
+    }
+
+    .bubble strong { color: var(--ink); }
+
+    .film-answer {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 14px;
+      padding-top: 13px;
+      border-top: 1px solid var(--line);
+    }
+
+    .film-poster {
+      min-height: 104px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      font-size: 28px;
+    }
+
+    .film-answer h3 {
+      margin: 1px 0 5px;
+      font: 400 19px Georgia, serif;
+    }
+
+    .film-answer p {
+      margin: 0;
+      color: #aaa79f;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .tag {
+      padding: 4px 7px;
+      border-radius: 20px;
+      color: #cbc7bc;
+      background: rgba(255,255,255,.055);
+      font-size: 10px;
+    }
+
+    .times {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .time {
+      padding: 6px 9px;
+      border: 1px solid rgba(159, 189, 138, .22);
+      border-radius: 7px;
+      color: #cfe1c2;
+      background: rgba(159, 189, 138, .07);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .suggestions {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 clamp(20px, 5vw, 58px) 14px;
+      scrollbar-width: none;
+    }
+
+    .suggestions::-webkit-scrollbar { display: none; }
+
+    .suggestion {
+      flex: 0 0 auto;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      color: #bbb8b0;
+      background: transparent;
+      font-size: 12px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .suggestion:hover, .suggestion:focus-visible {
+      outline: none;
+      color: var(--ink);
+      border-color: rgba(255, 117, 72, .4);
+      background: rgba(255, 117, 72, .08);
+    }
+
+    .composer {
+      display: flex;
+      gap: 10px;
+      margin: 0 clamp(20px, 5vw, 58px) 26px;
+      padding: 7px 7px 7px 18px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: #121211;
+      box-shadow: 0 12px 35px rgba(0,0,0,.2);
+    }
+
+    .composer:focus-within { border-color: rgba(255, 117, 72, .42); }
+
+    .composer input {
+      min-width: 0;
+      flex: 1;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 14px;
+    }
+
+    .composer input::placeholder { color: #6d6b66; }
+
+    .send {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 12px;
+      color: #171715;
+      background: var(--orange);
+      font-size: 18px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .send:hover { background: #ff8a63; transform: translateY(-1px); }
+
+    @media (max-width: 780px) {
+      .shell {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        grid-template-columns: 1fr;
+        border: 0;
+        border-radius: 0;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        height: 100vh;
+        min-height: 560px;
+      }
+
+      .messages { padding-top: 22px; }
+      .date { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">◆</span>
+        <span>CinéSillage</span>
+      </div>
+
+      <div>
+        <p class="eyebrow">Hors des sentiers battus</p>
+        <h1>Le cinéma autrement.</h1>
+        <p class="intro">Découvrez notre sélection indépendante, explorez les séances et laissez-vous surprendre par une histoire.</p>
+      </div>
+
+      <div class="now-playing">
+        <p class="section-title">À l'affiche</p>
+        <button class="film-mini" data-query="Parle-moi de La Chimère">
+          <span class="poster-mini" style="background:linear-gradient(145deg,#825a3e,#d7ad75)">🏺</span>
+          <span><strong>La Chimère</strong><small>Drame · 2h13</small></span>
+          <span class="arrow">›</span>
+        </button>
+        <button class="film-mini" data-query="Parle-moi de Perfect Days">
+          <span class="poster-mini" style="background:linear-gradient(145deg,#305765,#96b9ad)">🌿</span>
+          <span><strong>Perfect Days</strong><small>Drame · 2h05</small></span>
+          <span class="arrow">›</span>
+        </button>
+        <button class="film-mini" data-query="Parle-moi de L'Histoire de Souleymane">
+          <span class="poster-mini" style="background:linear-gradient(145deg,#303a53,#d16a45)">🚲</span>
+          <span><strong>L'Histoire de Souleymane</strong><small>Drame · 1h33</small></span>
+          <span class="arrow">›</span>
+        </button>
+      </div>
+
+      <div class="info-card">
+        <strong>Programmation fictive</strong>
+        Cette démonstration fonctionne entièrement hors ligne. Les films et horaires sont enregistrés dans cette page.
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="status"><span class="status-dot"></span> Assistant disponible</div>
+        <div class="date" id="date"></div>
+      </header>
+
+      <section class="messages" id="messages" aria-live="polite">
+        <div class="message">
+          <div class="avatar">◆</div>
+          <div class="bubble">
+            Bonsoir, je suis <strong>Sillage</strong>, votre guide du cinéma indépendant. Je peux vous présenter les films à l'affiche, raconter leur histoire ou vous indiquer les prochaines séances. Que souhaitez-vous voir ?
+          </div>
+        </div>
+      </section>
+
+      <div class="suggestions" aria-label="Questions suggérées">
+        <button class="suggestion" data-query="Quels films sont disponibles ?">Films à l'affiche</button>
+        <button class="suggestion" data-query="Quels sont les horaires aujourd'hui ?">Séances du jour</button>
+        <button class="suggestion" data-query="Conseille-moi un film contemplatif">Un film contemplatif</button>
+        <button class="suggestion" data-query="Quel est le film le plus court ?">Le film le plus court</button>
+      </div>
+
+      <form class="composer" id="composer">
+        <input id="question" type="text" autocomplete="off" aria-label="Votre question" placeholder="Demandez un film, un résumé, un horaire…">
+        <button class="send" type="submit" aria-label="Envoyer">↑</button>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    const films = [
+      {
+        title: "La Chimère",
+        aliases: ["chimere", "chimère"],
+        year: 2023,
+        country: "Italie",
+        director: "Alice Rohrwacher",
+        duration: "2h13",
+        minutes: 133,
+        genre: "Drame, aventure",
+        icon: "🏺",
+        color: "linear-gradient(145deg,#825a3e,#d7ad75)",
+        summary: "Dans la Toscane des années 1980, Arthur, un archéologue anglais mélancolique, rejoint une bande de pilleurs de tombes étrusques. Entre le monde des vivants et celui des morts, il poursuit surtout le souvenir d'un amour perdu.",
+        times: ["14:10", "18:20", "21:00"]
+      },
+      {
+        title: "Perfect Days",
+        aliases: ["perfect days", "perfect"],
+        year: 2023,
+        country: "Japon",
+        director: "Wim Wenders",
+        duration: "2h05",
+        minutes: 125,
+        genre: "Drame",
+        icon: "🌿",
+        color: "linear-gradient(145deg,#305765,#96b9ad)",
+        summary: "Hirayama mène à Tokyo une vie simple, rythmée par son travail, ses cassettes audio, ses livres et les arbres qu'il photographie. Une suite de rencontres révèle peu à peu la beauté de son quotidien et les ombres de son passé.",
+        times: ["13:45", "16:30", "20:15"]
+      },
+      {
+        title: "L'Histoire de Souleymane",
+        aliases: ["souleymane", "histoire de souleymane"],
+        year: 2024,
+        country: "France",
+        director: "Boris Lojkine",
+        duration: "1h33",
+        minutes: 93,
+        genre: "Drame",
+        icon: "🚲",
+        color: "linear-gradient(145deg,#303a53,#d16a45)",
+        summary: "Souleymane sillonne Paris à vélo pour livrer des repas. Dans deux jours, il doit passer son entretien de demande d'asile. Il répète fébrilement une histoire qui n'est pas la sienne, tandis que la ville lui impose sa course.",
+        times: ["15:00", "17:10", "19:25", "21:30"]
+      },
+      {
+        title: "Vingt Dieux",
+        aliases: ["vingt dieux", "20 dieux"],
+        year: 2024,
+        country: "France",
+        director: "Louise Courvoisier",
+        duration: "1h30",
+        minutes: 90,
+        genre: "Comédie dramatique",
+        icon: "🧀",
+        color: "linear-gradient(145deg,#6f6730,#d8bd5d)",
+        summary: "Dans le Jura, Totone, 18 ans, doit brusquement prendre soin de sa petite sœur. Pour gagner sa vie, il se lance un défi inattendu : fabriquer le meilleur comté de la région et remporter le concours agricole.",
+        times: ["14:30", "16:20", "18:40"]
+      },
+      {
+        title: "All We Imagine as Light",
+        aliases: ["all we imagine", "light"],
+        year: 2024,
+        country: "Inde",
+        director: "Payal Kapadia",
+        duration: "1h58",
+        minutes: 118,
+        genre: "Drame",
+        icon: "🌙",
+        color: "linear-gradient(145deg,#383264,#b27092)",
+        summary: "À Mumbai, Prabha et Anu, deux infirmières aux aspirations différentes, partagent un appartement et leurs confidences. Un voyage vers un village côtier leur ouvre un espace où leurs désirs peuvent enfin s'exprimer.",
+        times: ["16:00", "19:00", "21:20"]
+      }
+    ];
+
+    const messages = document.getElementById("messages");
+    const form = document.getElementById("composer");
+    const input = document.getElementById("question");
+
+    document.getElementById("date").textContent = new Intl.DateTimeFormat("fr-FR", {
+      weekday: "long", day: "numeric", month: "long"
+    }).format(new Date());
+
+    const normalize = text => text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    function filmCard(film, includeTimes = true) {
+      return `
+        <div class="film-answer">
+          <div class="film-poster" style="background:${film.color}">${film.icon}</div>
+          <div>
+            <h3>${film.title}</h3>
+            <p>${film.summary}</p>
+            <div class="tags">
+              <span class="tag">${film.genre}</span>
+              <span class="tag">${film.duration}</span>
+              <span class="tag">${film.director}</span>
+              <span class="tag">${film.country}, ${film.year}</span>
+            </div>
+            ${includeTimes ? `<div class="times">${film.times.map(time => `<span class="time">${time}</span>`).join("")}</div>` : ""}
+          </div>
+        </div>`;
+    }
+
+    function addMessage(content, role = "bot") {
+      const element = document.createElement("div");
+      element.className = `message ${role === "user" ? "user" : ""}`;
+      element.innerHTML = role === "bot"
+        ? `<div class="avatar">◆</div><div class="bubble">${content}</div>`
+        : `<div class="bubble"></div>`;
+      if (role === "user") element.querySelector(".bubble").textContent = content;
+      messages.appendChild(element);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function findFilm(query) {
+      const clean = normalize(query);
+      return films.find(film => film.aliases.some(alias => clean.includes(normalize(alias))));
+    }
+
+    function answer(rawQuery) {
+      const query = normalize(rawQuery);
+      const film = findFilm(rawQuery);
+
+      if (/bonjour|bonsoir|salut|hello/.test(query)) {
+        return "Bonsoir ! Ravi de vous accueillir. Je peux vous renseigner sur nos cinq films, leurs résumés et toutes les séances du jour.";
+      }
+
+      if (/merci/.test(query)) {
+        return "Avec plaisir. Bonne séance — et n'hésitez pas si vous voulez découvrir un autre film !";
+      }
+
+      if (film) {
+        const asksTime = /horaire|seance|heure|quand/.test(query);
+        if (asksTime) {
+          return `<strong>${film.title}</strong> est projeté aujourd'hui aux horaires suivants :<div class="times">${film.times.map(time => `<span class="time">${time}</span>`).join("")}</div>`;
+        }
+        return `Voici ce qu'il faut savoir sur <strong>${film.title}</strong>.${filmCard(film)}`;
+      }
+
+      if (/horaire|seance|heure|aujourd/.test(query)) {
+        return `<strong>Voici toutes les séances du jour :</strong>` + films.map(f =>
+          `<div style="margin-top:12px"><strong>${f.icon} ${f.title}</strong><div class="times">${f.times.map(t => `<span class="time">${t}</span>`).join("")}</div></div>`
+        ).join("");
+      }
+
+      if (/disponible|affiche|film|programme|programmation/.test(query) && !/conseil|recommand/.test(query)) {
+        return `<strong>Cinq films sont à l'affiche aujourd'hui :</strong>` + films.map(f =>
+          `<div style="margin-top:10px"><strong>${f.icon} ${f.title}</strong> — ${f.genre}, ${f.duration} · séances à ${f.times.join(", ")}</div>`
+        ).join("");
+      }
+
+      if (/court|rapide|moins long/.test(query)) {
+        const shortest = [...films].sort((a, b) => a.minutes - b.minutes)[0];
+        return `Le film le plus court est <strong>${shortest.title}</strong> (${shortest.duration}).${filmCard(shortest)}`;
+      }
+
+      if (/contemplat|calme|poeti|doux/.test(query)) {
+        const choice = films[1];
+        return `Je vous conseille <strong>${choice.title}</strong> : un film délicat et contemplatif, attentif aux petits gestes et à la beauté du quotidien.${filmCard(choice)}`;
+      }
+
+      if (/conseil|recommand|choisir|surprends|surprise/.test(query)) {
+        const choice = films[Math.floor(Math.random() * films.length)];
+        return `Ma suggestion du moment : <strong>${choice.title}</strong>.${filmCard(choice)}`;
+      }
+
+      return `Je n'ai pas tout à fait compris. Je peux vous donner <strong>les films à l'affiche</strong>, <strong>les horaires</strong>, le <strong>résumé</strong> d'un titre ou vous faire une recommandation. Essayez par exemple : « Résume-moi Perfect Days ».`;
+    }
+
+    function ask(question) {
+      if (!question.trim()) return;
+      addMessage(question, "user");
+      input.value = "";
+      window.setTimeout(() => addMessage(answer(question)), 280);
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      ask(input.value);
+    });
+
+    document.querySelectorAll("[data-query]").forEach(button => {
+      button.addEventListener("click", () => ask(button.dataset.query));
+    });
+  </script>
+</body>
+</html>

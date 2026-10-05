@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hors-Champ — Cinéma indépendant</title>
+  <style>
+    :root {
+      --ink: #1c1917;
+      --paper: #f5f0e7;
+      --card: #fffdf8;
+      --red: #b83b2f;
+      --red-dark: #8e291f;
+      --sage: #526b5d;
+      --muted: #746e66;
+      --line: #d8d0c3;
+      --shadow: 0 18px 50px rgba(42, 33, 24, .12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(184, 59, 47, .09), transparent 25rem),
+        radial-gradient(circle at 90% 90%, rgba(82, 107, 93, .12), transparent 28rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .22;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      position: relative;
+      width: min(1180px, calc(100% - 32px));
+      min-height: min(760px, calc(100vh - 48px));
+      margin: 24px auto;
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      overflow: hidden;
+      background: rgba(255, 253, 248, .86);
+      border: 1px solid rgba(216, 208, 195, .9);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      padding: 28px;
+      color: #f9f5ec;
+      background: var(--ink);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 40px;
+    }
+
+    .brand-mark {
+      width: 43px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .24);
+      border-radius: 50%;
+      color: #fff;
+      background: var(--red);
+      box-shadow: inset 0 0 0 5px var(--red);
+    }
+
+    .brand-mark svg { width: 22px; }
+    .brand-name { font-family: Georgia, serif; font-size: 21px; letter-spacing: .01em; }
+    .brand-kicker { margin-top: 2px; color: #aaa39a; font-size: 11px; text-transform: uppercase; letter-spacing: .14em; }
+
+    .sidebar h2 {
+      margin: 0 0 18px;
+      color: #8f8981;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .quick-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .quick {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      padding: 13px 14px;
+      color: #ece8e0;
+      text-align: left;
+      border: 1px solid #3a3733;
+      border-radius: 12px;
+      background: #272421;
+      transition: .2s ease;
+    }
+
+    .quick:hover, .quick:focus-visible {
+      border-color: #6b6259;
+      background: #332f2b;
+      transform: translateX(3px);
+      outline: none;
+    }
+
+    .quick svg { width: 18px; flex: 0 0 auto; color: #d8685c; }
+
+    .now-playing {
+      margin-top: auto;
+      padding-top: 28px;
+    }
+
+    .spotlight {
+      position: relative;
+      overflow: hidden;
+      padding: 18px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #536c5e, #31443a);
+    }
+
+    .spotlight::after {
+      content: "35 mm";
+      position: absolute;
+      right: -8px;
+      bottom: 5px;
+      color: rgba(255,255,255,.09);
+      font: 700 38px/1 Georgia, serif;
+      transform: rotate(-8deg);
+    }
+
+    .spotlight small { color: #c8d5ce; text-transform: uppercase; letter-spacing: .12em; }
+    .spotlight strong { display: block; margin-top: 7px; font: 22px/1.1 Georgia, serif; }
+    .spotlight span { display: block; margin-top: 10px; color: #dae2dd; font-size: 13px; }
+
+    .chat {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      max-height: calc(100vh - 48px);
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 23px 30px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bot-profile { display: flex; align-items: center; gap: 13px; }
+    .avatar {
+      position: relative;
+      width: 45px;
+      height: 45px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--red);
+      font-family: Georgia, serif;
+      font-size: 22px;
+    }
+
+    .avatar::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 1px;
+      width: 10px;
+      height: 10px;
+      border: 3px solid var(--card);
+      border-radius: 50%;
+      background: #4f996c;
+    }
+
+    .bot-profile strong { display: block; font-family: Georgia, serif; font-size: 17px; }
+    .status { margin-top: 3px; color: var(--muted); font-size: 12px; }
+
+    .date-chip {
+      padding: 8px 12px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font-size: 12px;
+      background: rgba(255,255,255,.45);
+    }
+
+    .messages {
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 30px;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 82%;
+      margin: 0 0 18px;
+      animation: appear .28s ease both;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .message.user { margin-left: auto; justify-content: flex-end; }
+    .message-avatar {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      margin-top: 3px;
+      color: #fff;
+      border-radius: 50%;
+      background: var(--red);
+      font: 14px Georgia, serif;
+    }
+
+    .bubble {
+      padding: 13px 16px;
+      border: 1px solid var(--line);
+      border-radius: 5px 18px 18px 18px;
+      background: var(--card);
+      line-height: 1.55;
+      box-shadow: 0 5px 14px rgba(42, 33, 24, .045);
+    }
+
+    .user .bubble {
+      color: white;
+      border-color: var(--red);
+      border-radius: 18px 5px 18px 18px;
+      background: var(--red);
+    }
+
+    .bubble p { margin: 0; }
+    .bubble p + p { margin-top: 8px; }
+    .bubble strong { font-weight: 750; }
+
+    .films {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      width: min(600px, 100%);
+      max-width: 92%;
+      margin: -5px 0 20px 38px;
+      animation: appear .3s ease both;
+    }
+
+    .film-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+    }
+
+    .film-poster {
+      height: 94px;
+      display: flex;
+      align-items: flex-end;
+      padding: 12px;
+      color: rgba(255,255,255,.75);
+      background: var(--poster);
+      font: italic 12px Georgia, serif;
+    }
+
+    .film-info { padding: 13px; }
+    .film-info strong { display: block; font: 17px Georgia, serif; }
+    .meta { margin: 5px 0 11px; color: var(--muted); font-size: 12px; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      padding: 4px 7px;
+      color: var(--sage);
+      border-radius: 99px;
+      background: #e7eee9;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .times { display: flex; flex-wrap: wrap; gap: 7px; }
+    .time {
+      padding: 6px 9px;
+      color: var(--red-dark);
+      border: 1px solid #ddbbb5;
+      border-radius: 7px;
+      background: #fff7f5;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .typing {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 58px;
+      height: 44px;
+    }
+
+    .typing i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #9a938a;
+      animation: blink 1s infinite alternate;
+    }
+
+    .typing i:nth-child(2) { animation-delay: .2s; }
+    .typing i:nth-child(3) { animation-delay: .4s; }
+    @keyframes blink { to { opacity: .25; transform: translateY(-3px); } }
+
+    .composer-wrap {
+      padding: 18px 30px 24px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 253, 248, .72);
+    }
+
+    .suggestions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .suggestion {
+      flex: 0 0 auto;
+      padding: 7px 11px;
+      color: #5f5952;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      background: transparent;
+      font-size: 12px;
+      transition: .2s ease;
+    }
+
+    .suggestion:hover { color: var(--red); border-color: #c99d96; background: #fff7f5; }
+
+    .composer {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 6px 6px 18px;
+      border: 1px solid #cfc5b7;
+      border-radius: 17px;
+      background: #fff;
+      box-shadow: 0 7px 22px rgba(42, 33, 24, .06);
+    }
+
+    .composer:focus-within { border-color: var(--red); box-shadow: 0 0 0 3px rgba(184,59,47,.1); }
+    .composer input {
+      min-width: 0;
+      flex: 1;
+      padding: 9px 0;
+      color: var(--ink);
+      border: 0;
+      outline: 0;
+      background: transparent;
+    }
+
+    .composer input::placeholder { color: #9c958c; }
+    .send {
+      width: 43px;
+      height: 43px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: white;
+      border: 0;
+      border-radius: 12px;
+      background: var(--red);
+      transition: .2s ease;
+    }
+
+    .send:hover { background: var(--red-dark); transform: translateY(-1px); }
+    .send svg { width: 19px; }
+    .note { margin: 8px 0 0; color: #969087; text-align: center; font-size: 10px; }
+
+    @media (max-width: 780px) {
+      .app {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        grid-template-columns: 1fr;
+        border: 0;
+        border-radius: 0;
+      }
+      .sidebar { display: none; }
+      .chat { max-height: 100vh; }
+      .chat-header, .messages, .composer-wrap { padding-left: 18px; padding-right: 18px; }
+      .date-chip { display: none; }
+      .message { max-width: 92%; }
+      .films { grid-template-columns: 1fr; margin-left: 38px; max-width: calc(100% - 38px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/><circle cx="12" cy="8" r="1.6"/><circle cx="8" cy="13" r="1.6"/><circle cx="16" cy="13" r="1.6"/><path d="M12 17.5h.01"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">Hors-Champ</div>
+          <div class="brand-kicker">Cinéma indépendant</div>
+        </div>
+      </div>
+
+      <h2>Je peux vous aider</h2>
+      <nav class="quick-list" aria-label="Actions rapides">
+        <button class="quick" data-query="Quels films sont disponibles ?">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9h4M17 9h4M3 15h4M17 15h4"/></svg>
+          Films à l'affiche
+        </button>
+        <button class="quick" data-query="Quels sont les horaires aujourd'hui ?">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Séances du jour
+        </button>
+        <button class="quick" data-query="Conseille-moi un film">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 1.7 5.3H19l-4.3 3.2 1.6 5.2-4.3-3.2-4.3 3.2 1.6-5.2L5 8.3h5.3L12 3Z"/><path d="m18 17 .8 2.2H21l-1.8 1.3.7 2.1"/></svg>
+          Une recommandation
+        </button>
+      </nav>
+
+      <div class="now-playing">
+        <h2>À ne pas manquer</h2>
+        <div class="spotlight">
+          <small>Avant-première · vendredi</small>
+          <strong>Les Silences<br>de l'aube</strong>
+          <span>Rencontre avec la réalisatrice</span>
+        </div>
+      </div>
+    </aside>
+
+    <section class="chat" aria-label="Conversation avec Alma">
+      <header class="chat-header">
+        <div class="bot-profile">
+          <div class="avatar" aria-hidden="true">A</div>
+          <div>
+            <strong>Alma, votre ouvreuse</strong>
+            <div class="status">En ligne · Répond instantanément</div>
+          </div>
+        </div>
+        <div class="date-chip" id="today"></div>
+      </header>
+
+      <div class="messages" id="messages" aria-live="polite">
+        <div class="message bot">
+          <div class="message-avatar" aria-hidden="true">A</div>
+          <div class="bubble">
+            <p>Bonjour, je suis <strong>Alma</strong> 👋</p>
+            <p>Je connais toute la programmation de Hors-Champ. Demandez-moi les films disponibles, leurs horaires ou leur résumé.</p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="composer-wrap">
+        <div class="suggestions" aria-label="Suggestions">
+          <button class="suggestion" data-query="Un film de moins de 2 heures">Moins de 2 heures</button>
+          <button class="suggestion" data-query="Je veux voir un documentaire">Un documentaire</button>
+          <button class="suggestion" data-query="Résume-moi L'Échappée">Résumé de L'Échappée</button>
+        </div>
+        <form class="composer" id="chat-form">
+          <input id="question" type="text" autocomplete="off" aria-label="Votre question" placeholder="Posez votre question à Alma…" required>
+          <button class="send" type="submit" aria-label="Envoyer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 4 17 8-17 8 3-8-3-8Z"/><path d="M7 12h14"/></svg>
+          </button>
+        </form>
+        <p class="note">Assistant de démonstration · les séances présentées sont fictives</p>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const films = [
+      {
+        title: "L'Échappée",
+        aliases: ["echappee", "l echappee"],
+        director: "Nora Benali",
+        country: "France",
+        year: 2026,
+        duration: 98,
+        genre: "Drame",
+        tags: ["Drame", "Coup de cœur"],
+        times: ["14:10", "18:20", "21:15"],
+        colors: "linear-gradient(120deg, #334e5d, #c16c4c)",
+        summary: "Dans un village des Cévennes, Inès, 17 ans, prépare en secret son départ. Une panne de bus et la rencontre d'une photographe itinérante font basculer le dernier jour de sa vie d'avant."
+      },
+      {
+        title: "Sous les lucioles",
+        aliases: ["sous les lucioles", "lucioles"],
+        director: "Akira Mori",
+        country: "Japon",
+        year: 2025,
+        duration: 112,
+        genre: "Romance",
+        tags: ["Romance", "VOSTFR"],
+        times: ["16:05", "20:40"],
+        colors: "linear-gradient(130deg, #182d36, #668a6d 55%, #dbb854)",
+        summary: "À Kyoto, un relieur solitaire et une botaniste se croisent chaque nuit au bord d'une rivière. Leur relation délicate se construit au rythme d'un été et des lucioles qui l'illuminent."
+      },
+      {
+        title: "La Ligne de sel",
+        aliases: ["la ligne de sel", "ligne de sel"],
+        director: "Marta Vélez",
+        country: "Chili",
+        year: 2026,
+        duration: 86,
+        genre: "Documentaire",
+        tags: ["Documentaire", "VOSTFR"],
+        times: ["13:30", "17:45"],
+        colors: "linear-gradient(145deg, #d8c69a, #b96d49 55%, #566e77)",
+        summary: "Au cœur du désert d'Atacama, trois générations de femmes racontent leur lien à une terre bouleversée par l'extraction du lithium. Un documentaire lumineux sur la mémoire et la résistance."
+      },
+      {
+        title: "Le Bruit des autres",
+        aliases: ["le bruit des autres", "bruit des autres"],
+        director: "Samir Ould",
+        country: "Belgique",
+        year: 2025,
+        duration: 124,
+        genre: "Comédie",
+        tags: ["Comédie", "Festival"],
+        times: ["15:20", "19:00"],
+        colors: "linear-gradient(135deg, #7d3f35, #d29c63 50%, #3e5453)",
+        summary: "Les habitants d'un immeuble bruxellois apprennent que leur cour va devenir une scène de festival. Entre répétitions chaotiques et querelles de voisinage, une troupe improbable voit le jour."
+      }
+    ];
+
+    const messages = document.getElementById("messages");
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("question");
+
+    document.getElementById("today").textContent = new Intl.DateTimeFormat("fr-FR", {
+      weekday: "long", day: "numeric", month: "long"
+    }).format(new Date());
+
+    function normalize(text) {
+      return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[’']/g, " ");
+    }
+
+    function addMessage(content, sender = "bot") {
+      const row = document.createElement("div");
+      row.className = `message ${sender}`;
+      if (sender === "bot") {
+        const avatar = document.createElement("div");
+        avatar.className = "message-avatar";
+        avatar.setAttribute("aria-hidden", "true");
+        avatar.textContent = "A";
+        row.appendChild(avatar);
+      }
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.innerHTML = content;
+      row.appendChild(bubble);
+      messages.appendChild(row);
+      scrollBottom();
+      return row;
+    }
+
+    function showTyping() {
+      return addMessage('<div class="typing" aria-label="Alma écrit"><i></i><i></i><i></i></div>');
+    }
+
+    function scrollBottom() {
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function filmCards(list, showTimes = false) {
+      const grid = document.createElement("div");
+      grid.className = "films";
+      list.forEach(film => {
+        const card = document.createElement("article");
+        card.className = "film-card";
+        card.innerHTML = `
+          <div class="film-poster" style="--poster:${film.colors}">${film.country} · ${film.year}</div>
+          <div class="film-info">
+            <strong>${film.title}</strong>
+            <div class="meta">${film.director} · ${film.duration} min</div>
+            ${showTimes
+              ? `<div class="times">${film.times.map(time => `<span class="time">${time}</span>`).join("")}</div>`
+              : `<div class="tags">${film.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>`}
+          </div>`;
+        grid.appendChild(card);
+      });
+      messages.appendChild(grid);
+      scrollBottom();
+    }
+
+    function findFilm(query) {
+      const q = normalize(query);
+      return films.find(film => film.aliases.some(alias => q.includes(normalize(alias))));
+    }
+
+    function respond(rawQuery) {
+      const query = normalize(rawQuery);
+      const film = findFilm(rawQuery);
+
+      if (film && /(resume|histoire|parle|quoi|synopsis)/.test(query)) {
+        addMessage(`<p><strong>${film.title}</strong>, de ${film.director} :</p><p>${film.summary}</p><p>${film.genre} · ${film.duration} min · ${film.country}, ${film.year}</p>`);
+        return;
+      }
+
+      if (film && /(horaire|seance|quand|heure)/.test(query)) {
+        addMessage(`<p><strong>${film.title}</strong> est projeté aujourd'hui à ${film.times.join(", ")}.</p>`);
+        filmCards([film], true);
+        return;
+      }
+
+      if (film) {
+        addMessage(`<p><strong>${film.title}</strong> est un ${film.genre.toLowerCase()} de ${film.director} (${film.duration} min).</p><p>${film.summary}</p><p>Séances aujourd'hui : ${film.times.join(", ")}.</p>`);
+        return;
+      }
+
+      if (/(horaire|seance|programme|quand|heure)/.test(query)) {
+        addMessage("<p>Voici toutes les <strong>séances d'aujourd'hui</strong>. Les portes ouvrent 15 minutes avant chaque projection.</p>");
+        filmCards(films, true);
+        return;
+      }
+
+      if (/(documentaire|documentary)/.test(query)) {
+        const docs = films.filter(item => item.genre === "Documentaire");
+        addMessage("<p>Je vous propose notre documentaire à l'affiche :</p>");
+        filmCards(docs);
+        return;
+      }
+
+      if (/(moins de 2|court|courte|duree)/.test(query)) {
+        const shortFilms = films.filter(item => item.duration < 120);
+        addMessage("<p>Ces films durent <strong>moins de deux heures</strong> :</p>");
+        filmCards(shortFilms);
+        return;
+      }
+
+      if (/(conseil|conseille|recommand|choisir|surprise)/.test(query)) {
+        const pick = films[0];
+        addMessage(`<p>Mon choix du moment : <strong>${pick.title}</strong> de ${pick.director}.</p><p>Un récit sensible et lumineux, parfait si vous aimez les drames intimistes. Prochaine séance à ${pick.times[0]}.</p>`);
+        filmCards([pick]);
+        return;
+      }
+
+      if (/(film|affiche|disponible|voir|programmation)/.test(query)) {
+        addMessage("<p>Nous présentons actuellement <strong>quatre films indépendants</strong> :</p>");
+        filmCards(films);
+        return;
+      }
+
+      if (/(bonjour|salut|hello|bonsoir)/.test(query)) {
+        addMessage("<p>Bonjour ! Ravi de vous accueillir à Hors-Champ. Souhaitez-vous voir les films à l'affiche ou les horaires des séances ?</p>");
+        return;
+      }
+
+      if (/(merci|parfait|super)/.test(query)) {
+        addMessage("<p>Avec plaisir ! Je reste là si vous souhaitez un résumé ou les horaires d'un film.</p>");
+        return;
+      }
+
+      addMessage("<p>Je n'ai pas bien saisi votre demande. Je peux vous renseigner sur <strong>les films à l'affiche</strong>, <strong>les horaires</strong> ou vous donner <strong>un résumé</strong>.</p><p>Essayez par exemple : « Résume-moi Sous les lucioles ».</p>");
+    }
+
+    function ask(question) {
+      const clean = question.trim();
+      if (!clean) return;
+      addMessage(`<p>${clean.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]))}</p>`, "user");
+      input.value = "";
+      input.focus();
+      const typing = showTyping();
+      window.setTimeout(() => {
+        typing.remove();
+        respond(clean);
+      }, 550 + Math.random() * 400);
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      ask(input.value);
+    });
+
+    document.querySelectorAll("[data-query]").forEach(button => {
+      button.addEventListener("click", () => ask(button.dataset.query));
+    });
+  </script>
+</body>
+</html>

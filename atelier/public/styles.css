@@ -19,6 +19,7 @@ main {
   padding: 1rem;
   border: 1px solid #ccd3df;
   border-radius: .5rem;
+  overflow-wrap: anywhere;
 }
 
 #chat-form {

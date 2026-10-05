@@ -93,10 +93,10 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 ### J1-05 · 🛠 dsh en main — [fiche](checkpoints/J1-05-dsh-en-main.md)
 
 - [ ] Validé
-- Preuve (`dsh --version`, mode Read Only, modèle `capweb-ia`, `git status -- atelier` propre ; **jamais la clé**) :
-- La consigne exacte envoyée à l'agent et sa réponse :
-- Pour chaque fichier cité : existe ou non, description juste ou fausse, pourquoi ; et un fichier qu'il n'a pas cité :
-- Difficulté qui reste :
+- Preuve (`dsh --version`, mode Read Only, modèle `capweb-ia`, `git status -- atelier` propre ; **jamais la clé**) : `dsh --version` affiche `0.1.5-rc.2` et `git status --porcelain -- atelier` ne renvoie rien, donc le dossier `atelier` est propre. Le mode Read Only et le modèle `capweb-ia` ne sont pas encore vérifiés.
+- La consigne exacte à envoyer à l'agent : « Liste les fichiers de ce dossier et dis ce que fait chacun. Donne le chemin de chaque fichier. Si tu ne sais pas ce que fait un fichier, écris “je ne sais pas”. N'écris rien et ne modifie rien. » Réponse : pas encore obtenue.
+- Pour chaque fichier cité : pas encore vérifiable, car l'agent n'a pas pu démarrer avec la passerelle. Un fichier à contrôler s'il n'est pas cité : `atelier/.gitignore`.
+- Difficulté qui reste : `C:\Users\briot\dsh-capweb` ne contient pas encore `settings.yaml` ni `.credentials.yaml`. Le premier essai renvoie `dsh: MISSING_CREDENTIAL` pour le fournisseur par défaut `deepseek-official`. Il faut créer ces deux fichiers soi-même avec l'adresse et la clé agent remises en privé par le formateur, sans les copier dans le carnet ou dans un chat.
 
 ### J1-06 · 🧱 Anatomie d'un prompt — [fiche](checkpoints/J1-06-anatomie-dun-prompt.md)
 

@@ -1,2 +1,48 @@
-body { font-family: system-ui, sans-serif; margin: 2rem; color: #15213a; background: white; }
-main { max-width: 48rem; margin-inline: auto; }
+body {
+  margin: 0;
+  padding: 2rem;
+  color: #15213a;
+  background: #f4f6fb;
+  font-family: system-ui, sans-serif;
+}
+
+main {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 1rem;
+}
+
+#messages {
+  min-height: 12rem;
+  padding: 1rem;
+  border: 1px solid #ccd3df;
+  border-radius: .5rem;
+}
+
+#chat-form {
+  display: grid;
+  gap: .75rem;
+}
+
+#message {
+  min-height: 6rem;
+  padding: .75rem;
+  font: inherit;
+}
+
+button {
+  width: fit-content;
+  padding: .65rem 1rem;
+  color: white;
+  background: #234f9b;
+  border: 0;
+  border-radius: .4rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+#status {
+  min-height: 1.5rem;
+}

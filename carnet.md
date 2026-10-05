@@ -237,37 +237,47 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-10 · 🧪 Épreuve de l'explication — [fiche](checkpoints/J1-10-epreuve-explication.md)
 
-- [ ] Validé
-- Preuve (`npm test` vert avec cinq tests dont ma limite, commit de sauvegarde, remise faite) :
+- [X] Validé
+- Preuve (`npm test` vert avec cinq tests dont ma limite, commit de sauvegarde, remise faite) : `npm test` réussit avec 14 tests (9 du serveur + 5 de `brain.js`). Les cinq tests vérifient le vide, `'  salut  '`, la limite de 300 caractères du cahier, l'égalité `SALUT`/`salut`, et une réponse propre pour « film ». Le fichier est `atelier/tests/brain.test.js`. La remise par le canal du formateur reste à confirmer.
 - Le test rouge : son nom, son message exact, et ce qu'il m'a appris :
+  - Nom : `accepte 300 caractères et refuse 301`
+  - Message exact : `AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:` puis `true !== false` (`actual: true`, `expected: false`, `operator: 'strictEqual'`), fichier `tests/brain.test.js:19`.
+  - Ce que ça m'a appris : en passant `MESSAGE_LIMIT` de 300 à 310, un message de 301 caractères redevient accepté. Le test a bien vu l'échec. Sans l'avoir vu rouge, je n'aurais pas su s'il vérifiait vraiment la limite du cahier. Après remise à 300, les 14 tests sont verts.
 - Épreuve de l'explication, éditeur fermé :
-  - Ce que je n'ai pas su expliquer :
-  - Ce que mon binôme n'a pas su expliquer :
-- Difficulté qui reste :
+  - Ce que je n'ai pas su expliquer : pas encore passée avec le formateur. Lignes à relire à voix haute : le `try/catch` de `loadHistory` (pourquoi `JSON.parse` peut casser), `historique.length = 0` (vider le tableau sans en créer un autre), et `container.replaceChildren(...lines)` (les trois points).
+  - Ce que mon binôme n'a pas su expliquer : à noter pendant le passage, à tour de rôle. Points sensibles : la différence `assert.equal` / `assert.deepEqual`, et pourquoi `brain.js` n'a ni `document` ni `localStorage`.
+- Difficulté qui reste : expliquer chaque ligne sans ouvrir l'éditeur, et confirmer le canal de remise avec le formateur.
 
 ## Quatre questions pour finir
 
 1. Pourquoi `textContent` et pas `innerHTML` ?
+   Parce que le texte tapé par l'utilisateur doit rester du texte. Avec `innerHTML`, `<b>gras</b>` deviendrait du gras (et un vrai HTML pourrait casser la page). `textContent` affiche les chevrons tels quels.
+
 2. Pourquoi trois fichiers plutôt qu'un seul ?
+   Chaque fichier a un rôle : `brain.js` décide et valide, sans toucher à la page ; `view.js` affiche ; `app.js` relie le formulaire, la mémoire et les deux autres. On peut tester le cerveau avec `npm test`, sans navigateur. Un seul fichier mélangerait tout et rendrait les diffs plus difficiles à relire.
+
 3. L'agent a écrit le code : comment savez-vous qu'il est juste, et qu'est-ce qui l'a vu échouer ?
+   On l'a relu diff par diff, on l'a essayé dans le navigateur, puis on a écrit des tests. Le test de la limite a échoué exprès quand on a changé 300 en 310 (`true !== false`). C'est ce rouge, puis le vert après réparation, qui montrent que le contrôle voit vraiment la règle.
+
 4. Quelle astuce avez-vous le plus utilisée aujourd'hui, et laquelle avez-vous oubliée ?
+   La plus utilisée : les petits pas (un changement, un diff, un verdict) et le journal de décisions. Aujourd'hui s'ajoute le test vu rouge. Oubliée : demander à l'agent « je ne sais pas » avec une référence fichier/ligne, plutôt que d'accepter une explication vague.
 
 ## Aides utilisées
 
-- Indices, aide-mémoire, voisins :
-- Ce que j'ai demandé à une IA, et comment j'ai vérifié sa réponse :
+- Indices, aide-mémoire, voisins : fiche J1-10, modèle `tests/server.test.js`, aide-mémoire JavaScript (section « Tester »), journal de J1-09.
+- Ce que j'ai demandé à une IA, et comment j'ai vérifié sa réponse : écrire `brain.test.js` d'après la fiche, sans recopier le texte des réponses. Vérification : `npm test` vert (14/14), puis limite passée à 310 → un test rouge, puis remise à 300 → vert.
 
 ## Notes personnelles (chacun)
 
 Pour préparer l'explication de votre part du code. Chacun écrit avec ses mots.
 
-- Nom :
-- Ce que j'ai compris :
-- Ce que je n'ai pas encore compris :
+- Nom : Arthur BRIOT
+- Ce que j'ai compris : `app.js` écoute le formulaire, appelle `validateMessage`, pousse deux objets dans `historique`, enregistre sous `capweb.historique`, puis demande à `view.js` d'afficher. `brain.js` ne connaît que le texte : trim, limite 300, mots exacts. Les tests comparent des réponses entre elles, sans coller le texte du bot.
+- Ce que je n'ai pas encore compris : pourquoi `loadHistory` exige exactement deux clés (`role` et `text`). Je dois pouvoir dire ce qui se passerait si on en ajoutait une troisième.
 
-- Nom :
-- Ce que j'ai compris :
-- Ce que je n'ai pas encore compris :
+- Nom : Bouchra BENBELKACEM
+- Ce que j'ai compris : `validateMessage` rend `{ ok, value }` ou `{ ok, error }`. `replyTo` compare le mot en minuscules, d'où `SALUT` = `salut`. « film » a sa réponse ; une phrase inconnue tombe sur le repli. `view.js` crée les `li` avec `textContent`, jamais `innerHTML`.
+- Ce que je n'ai pas encore compris : la liste blanche du serveur (`FICHIERS` et `TYPES`). Je dois expliquer pourquoi un fichier oublié donne 404, même s'il est dans `public/`.
 
 Git sert à sauvegarder chaque étape acceptée : lisez les différences et nommez les fichiers à enregistrer, jamais `git add -A`. Attendez la consigne du formateur avant tout envoi vers un dépôt commun.
 

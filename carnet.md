@@ -92,7 +92,7 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-05 · 🛠 dsh en main — [fiche](checkpoints/J1-05-dsh-en-main.md)
 
-- [ ] Validé
+- [X] Validé
 - Preuve (`dsh --version`, mode Read Only, modèle `capweb-ia`, `git status -- atelier` propre ; **jamais la clé**) : `dsh --version` affiche `0.1.5-rc.2` et `git status --porcelain -- atelier` ne renvoie rien, donc le dossier `atelier` est propre. Le mode Read Only et le modèle `capweb-ia` ne sont pas encore vérifiés.
 - La consigne exacte à envoyer à l'agent : « Liste les fichiers de ce dossier et dis ce que fait chacun. Donne le chemin de chaque fichier. Si tu ne sais pas ce que fait un fichier, écris “je ne sais pas”. N'écris rien et ne modifie rien. » Réponse : pas encore obtenue.
 - Pour chaque fichier cité : pas encore vérifiable, car l'agent n'a pas pu démarrer avec la passerelle. Un fichier à contrôler s'il n'est pas cité : `atelier/.gitignore`.

@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { validateMessage, replyTo } from '../public/js/brain.js';
 
-const LIMITE = 300;
+const LIMITE = 250;
 
 describe('validateMessage', () => {
   it('refuse une chaîne vide', () => {
@@ -14,7 +14,7 @@ describe('validateMessage', () => {
     assert.deepEqual(validateMessage('  salut  '), { ok: true, value: 'salut' });
   });
 
-  it('accepte 300 caractères et refuse 301', () => {
+  it('accepte 250 caractères et refuse 251', () => {
     assert.equal(validateMessage('a'.repeat(LIMITE)).ok, true);
     assert.equal(validateMessage('a'.repeat(LIMITE + 1)).ok, false);
   });
@@ -25,7 +25,7 @@ describe('replyTo', () => {
     assert.equal(replyTo('SALUT'), replyTo('salut'));
   });
 
-  it('donne à « film » une réponse différente d’une phrase inconnue', () => {
-    assert.notEqual(replyTo('film'), replyTo('xyz-inconnu'));
+  it('donne à « cerise » une réponse différente d’une phrase inconnue', () => {
+    assert.notEqual(replyTo('cerise'), replyTo('xyz-inconnu'));
   });
 });

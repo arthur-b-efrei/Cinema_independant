@@ -1,4 +1,4 @@
-const MESSAGE_LIMIT = 300;
+const MESSAGE_LIMIT = 250;
 
 export function validateMessage(raw) {
   if (typeof raw !== 'string') {
@@ -28,11 +28,11 @@ export function replyTo(message) {
   if (normalized === 'test') {
     return 'Le test fonctionne.';
   }
-  if (normalized === 'film') {
-    return 'Je peux vous présenter les films indépendants disponibles.';
+  if (normalized === 'cerise') {
+    return 'Cerise : je peux vous présenter les films indépendants disponibles.';
   }
-  if (normalized === 'horraires') {
-    return 'Je peux vous indiquer les horaires des prochaines séances.';
+  if (normalized === 'prairie') {
+    return 'Prairie : je peux vous indiquer les horaires des prochaines séances.';
   }
 
   return 'Je n’ai pas compris. Écrivez « aide » pour connaître mes possibilités.';

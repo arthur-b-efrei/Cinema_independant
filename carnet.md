@@ -18,9 +18,9 @@ Rôles de départ et moments d'échange : Arthur manipule et le bouchra vérifie
 
 Recopiez les valeurs telles que le formateur vous les a remises. Ne les changez pas, ne les échangez pas avec un autre binôme.
 
-- Limite de caractères d'un message (le nombre N) : 300
-- Premier mot reconnu, en plus de « salut », « aide » et « test » :
-- Second mot reconnu :"film" "horraires" "résumer"
+- Limite de caractères d'un message (le nombre N) : 250
+- Premier mot reconnu, en plus de « salut », « aide » et « test » : cerise
+- Second mot reconnu : prairie
 
 ## Commandes essayées
 
@@ -198,6 +198,7 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 | 8 | « Dans `brain.js`, ajoute les mots “film” et “horraires” et la limite unique de 300 caractères ; aligne le libellé HTML. » | `brain.js` et `index.html` : +12/-1 | Accepté. 300 caractères passent, 301 sont refusés et les deux mots ont une réponse propre. |
 | 9 | « Planifie puis crée `view.js` avec `renderMessages`, allège `app.js` et sers le nouveau module. » | `app.js`, `view.js` et `server/app.js` : +19/-9 | Accepté. `app.js` ne crée plus de `li` et l'affichage utilise uniquement `textContent`. |
 | 10 | « Ajoute la mémoire `capweb.historique`, la récupération d'un JSON abîmé et le bouton `#effacer` avec confirmation. » | `app.js` et `index.html` : +46/-1 | Accepté. F5 conserve l'historique ; annuler garde tout et confirmer vide l'affichage et le stockage. |
+| 11 | « Aligne le cahier b10 : limite 250, mots cerise et prairie. » | `brain.js`, `index.html`, `brain.test.js` | Accepté. Les valeurs du formateur remplacent 300 / film / horraires. |
 
 ### J1-08 · 🔎 Revue de la page — [fiche](checkpoints/J1-08-revue-de-la-page.md)
 
@@ -225,7 +226,7 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 ### J1-09 · 🧠 Un cerveau à règles, par prompts — [fiche](checkpoints/J1-09-cerveau-a-regles.md)
 
 - [X] Validé
-- Preuve (comportements vérifiés : « Vous : … », message vide, `<b>gras</b>`, mes deux mots, ma limite ; `/js/brain.js` et `/js/view.js` affichés ; F5 ; « Effacer ») : « SALUT » entouré d'espaces affiche « Vous : SALUT » puis la réponse de Cap Web ; le vide est refusé avec un statut ; `<b>gras</b>` apparaît avec ses chevrons. « film » et « HORRAIRES » ont chacun une réponse propre. La vérification directe de `validateMessage` renvoie `true` pour 300 caractères et `false` pour 301. Les trois modules sont servis, F5 conserve les messages, un historique abîmé repart vide et « Effacer » demande confirmation.
+- Preuve (comportements vérifiés : « Vous : … », message vide, `<b>gras</b>`, mes deux mots, ma limite ; `/js/brain.js` et `/js/view.js` affichés ; F5 ; « Effacer ») : « SALUT » entouré d'espaces affiche « Vous : SALUT » puis la réponse de Cap Web ; le vide est refusé avec un statut ; `<b>gras</b>` apparaît avec ses chevrons. « cerise » et « PRAIRIE » ont chacun une réponse propre. La vérification directe de `validateMessage` renvoie `true` pour 250 caractères et `false` pour 251. Les trois modules sont servis, F5 conserve les messages, un historique abîmé repart vide et « Effacer » demande confirmation.
 - Mes six demandes et leurs verdicts : dans le journal des décisions ci-dessus.
 - Le rôle de chaque fichier, en une phrase chacun :
   - `app.js` : relie le formulaire, le cerveau, l'affichage et la mémoire de la conversation.
@@ -233,16 +234,16 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
   - `view.js` : transforme le tableau d'historique en éléments `li` affichés avec `textContent`.
 - Plan de rangement relu avant l'écriture : 1. créer `renderMessages` dans `view.js` ; 2. garder l'historique dans `app.js` ; 3. remplacer la création directe des `li` par le rendu ; 4. servir `view.js` ; 5. vérifier que le comportement reste identique. Correction demandée au plan : aucun stockage dans `view.js` et aucune règle de réponse hors de `brain.js`.
 - Ce que j'ai vu quand j'ai mis `{pas du json` dans la mémoire : après rechargement, la page ne plante pas, la conversation repart vide, la clé invalide est supprimée et le statut affiche « Historique illisible : la conversation repart vide. »
-- Difficulté qui reste : le mot du cahier est écrit « horraires » avec deux `r` ; la règle respecte cette valeur exacte, mais « horaires » correctement orthographié reçoit encore la réponse de repli.
+- Difficulté qui reste : les mots du cahier b10 (`cerise`, `prairie`) n'ont pas de lien avec le cinéma ; il faudra plus tard des réponses plus utiles, tout en gardant ces deux mots exacts.
 
 ### J1-10 · 🧪 Épreuve de l'explication — [fiche](checkpoints/J1-10-epreuve-explication.md)
 
 - [X] Validé
-- Preuve (`npm test` vert avec cinq tests dont ma limite, commit de sauvegarde, remise faite) : `npm test` réussit avec 14 tests (9 du serveur + 5 de `brain.js`). Les cinq tests vérifient le vide, `'  salut  '`, la limite de 300 caractères du cahier, l'égalité `SALUT`/`salut`, et une réponse propre pour « film ». Le fichier est `atelier/tests/brain.test.js`. La remise par le canal du formateur reste à confirmer.
+- Preuve (`npm test` vert avec cinq tests dont ma limite, commit de sauvegarde, remise faite) : `npm test` réussit avec 14 tests (9 du serveur + 5 de `brain.js`). Les cinq tests vérifient le vide, `'  salut  '`, la limite de 250 caractères du cahier b10, l'égalité `SALUT`/`salut`, et une réponse propre pour « cerise ». Le fichier est `atelier/tests/brain.test.js`. La remise par le canal du formateur reste à confirmer.
 - Le test rouge : son nom, son message exact, et ce qu'il m'a appris :
-  - Nom : `accepte 300 caractères et refuse 301`
+  - Nom : `accepte 250 caractères et refuse 251`
   - Message exact : `AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:` puis `true !== false` (`actual: true`, `expected: false`, `operator: 'strictEqual'`), fichier `tests/brain.test.js:19`.
-  - Ce que ça m'a appris : en passant `MESSAGE_LIMIT` de 300 à 310, un message de 301 caractères redevient accepté. Le test a bien vu l'échec. Sans l'avoir vu rouge, je n'aurais pas su s'il vérifiait vraiment la limite du cahier. Après remise à 300, les 14 tests sont verts.
+  - Ce que ça m'a appris : en passant `MESSAGE_LIMIT` de 250 à 260, un message de 251 caractères redevient accepté. Le test a bien vu l'échec. Sans l'avoir vu rouge, je n'aurais pas su s'il vérifiait vraiment la limite du cahier. Après remise à 250, les 14 tests sont verts.
 - Épreuve de l'explication, éditeur fermé :
   - Ce que je n'ai pas su expliquer : pas encore passée avec le formateur. Lignes à relire à voix haute : le `try/catch` de `loadHistory` (pourquoi `JSON.parse` peut casser), `historique.length = 0` (vider le tableau sans en créer un autre), et `container.replaceChildren(...lines)` (les trois points).
   - Ce que mon binôme n'a pas su expliquer : à noter pendant le passage, à tour de rôle. Points sensibles : la différence `assert.equal` / `assert.deepEqual`, et pourquoi `brain.js` n'a ni `document` ni `localStorage`.
@@ -257,7 +258,7 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
    Chaque fichier a un rôle : `brain.js` décide et valide, sans toucher à la page ; `view.js` affiche ; `app.js` relie le formulaire, la mémoire et les deux autres. On peut tester le cerveau avec `npm test`, sans navigateur. Un seul fichier mélangerait tout et rendrait les diffs plus difficiles à relire.
 
 3. L'agent a écrit le code : comment savez-vous qu'il est juste, et qu'est-ce qui l'a vu échouer ?
-   On l'a relu diff par diff, on l'a essayé dans le navigateur, puis on a écrit des tests. Le test de la limite a échoué exprès quand on a changé 300 en 310 (`true !== false`). C'est ce rouge, puis le vert après réparation, qui montrent que le contrôle voit vraiment la règle.
+   On l'a relu diff par diff, on l'a essayé dans le navigateur, puis on a écrit des tests. Le test de la limite a échoué exprès quand on a changé 250 en 260 (`true !== false`). C'est ce rouge, puis le vert après réparation, qui montrent que le contrôle voit vraiment la règle.
 
 4. Quelle astuce avez-vous le plus utilisée aujourd'hui, et laquelle avez-vous oubliée ?
    La plus utilisée : les petits pas (un changement, un diff, un verdict) et le journal de décisions. Aujourd'hui s'ajoute le test vu rouge. Oubliée : demander à l'agent « je ne sais pas » avec une référence fichier/ligne, plutôt que d'accepter une explication vague.
@@ -265,18 +266,18 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 ## Aides utilisées
 
 - Indices, aide-mémoire, voisins : fiche J1-10, modèle `tests/server.test.js`, aide-mémoire JavaScript (section « Tester »), journal de J1-09.
-- Ce que j'ai demandé à une IA, et comment j'ai vérifié sa réponse : écrire `brain.test.js` d'après la fiche, sans recopier le texte des réponses. Vérification : `npm test` vert (14/14), puis limite passée à 310 → un test rouge, puis remise à 300 → vert.
+- Ce que j'ai demandé à une IA, et comment j'ai vérifié sa réponse : écrire `brain.test.js` d'après la fiche, sans recopier le texte des réponses. Vérification : `npm test` vert (14/14), puis limite passée à 260 → un test rouge, puis remise à 250 → vert. Les valeurs du cahier b10 (250, cerise, prairie) ont ensuite remplacé les anciennes.
 
 ## Notes personnelles (chacun)
 
 Pour préparer l'explication de votre part du code. Chacun écrit avec ses mots.
 
 - Nom : Arthur BRIOT
-- Ce que j'ai compris : `app.js` écoute le formulaire, appelle `validateMessage`, pousse deux objets dans `historique`, enregistre sous `capweb.historique`, puis demande à `view.js` d'afficher. `brain.js` ne connaît que le texte : trim, limite 300, mots exacts. Les tests comparent des réponses entre elles, sans coller le texte du bot.
+- Ce que j'ai compris : `app.js` écoute le formulaire, appelle `validateMessage`, pousse deux objets dans `historique`, enregistre sous `capweb.historique`, puis demande à `view.js` d'afficher. `brain.js` ne connaît que le texte : trim, limite 250, mots exacts (`cerise`, `prairie`). Les tests comparent des réponses entre elles, sans coller le texte du bot.
 - Ce que je n'ai pas encore compris : pourquoi `loadHistory` exige exactement deux clés (`role` et `text`). Je dois pouvoir dire ce qui se passerait si on en ajoutait une troisième.
 
 - Nom : Bouchra BENBELKACEM
-- Ce que j'ai compris : `validateMessage` rend `{ ok, value }` ou `{ ok, error }`. `replyTo` compare le mot en minuscules, d'où `SALUT` = `salut`. « film » a sa réponse ; une phrase inconnue tombe sur le repli. `view.js` crée les `li` avec `textContent`, jamais `innerHTML`.
+- Ce que j'ai compris : `validateMessage` rend `{ ok, value }` ou `{ ok, error }`. `replyTo` compare le mot en minuscules, d'où `SALUT` = `salut` et `CERISE` = `cerise`. « prairie » a sa réponse ; une phrase inconnue tombe sur le repli. `view.js` crée les `li` avec `textContent`, jamais `innerHTML`.
 - Ce que je n'ai pas encore compris : la liste blanche du serveur (`FICHIERS` et `TYPES`). Je dois expliquer pourquoi un fichier oublié donne 404, même s'il est dans `public/`.
 
 Git sert à sauvegarder chaque étape acceptée : lisez les différences et nommez les fichiers à enregistrer, jamais `git add -A`. Attendez la consigne du formateur avant tout envoi vers un dépôt commun.

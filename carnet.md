@@ -292,7 +292,7 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 - Le test rouge : son nom, son message exact, et ce qu'il m'a appris :
   - Nom : `accepte 250 caractères et refuse 251`
   - Message exact : `AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:` puis `true !== false` (`actual: true`, `expected: false`, `operator: 'strictEqual'`), fichier `tests/brain.test.js:19`.
-  - Ce que ça m'a appris : en passant `MESSAGE_LIMIT` de 250 à 260, un message de 251 caractères redevient accepté. Le test a bien vu l'échec. Sans l'avoir vu rouge, je n'aurais pas su s'il vérifiait vraiment la limite du cahier. Après remise à 250, les 14 tests sont verts.
+  - Ce que ça m'a appris : au début le test était vert, donc on aurait pu croire que c'était bon. On a changé 250 en 260 pour voir. Là, 251 caractères passaient et le test est passé au rouge : `true !== false`. Ça m'a montré qu'il regardait vraiment la limite, pas juste un nombre collé dans le fichier de test. On a remis 250, et tout est revenu au vert.
 - Épreuve de l'explication, éditeur fermé :
   - Ce que je n'ai pas su expliquer : pas encore passée avec le formateur. Lignes à relire à voix haute : le `try/catch` de `loadHistory` (pourquoi `JSON.parse` peut casser), `historique.length = 0` (vider le tableau sans en créer un autre), et `container.replaceChildren(...lines)` (les trois points).
   - Ce que mon binôme n'a pas su expliquer : à noter pendant le passage, à tour de rôle. Points sensibles : la différence `assert.equal` / `assert.deepEqual`, et pourquoi `brain.js` n'a ni `document` ni `localStorage`.
@@ -301,33 +301,33 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 ## Quatre questions pour finir
 
 1. Pourquoi `textContent` et pas `innerHTML` ?
-   Parce que le texte tapé par l'utilisateur doit rester du texte. Avec `innerHTML`, `<b>gras</b>` deviendrait du gras (et un vrai HTML pourrait casser la page). `textContent` affiche les chevrons tels quels.
+   On l'a vu avec `<b>gras</b>` : si on met `innerHTML`, le navigateur croit que c'est du vrai HTML et affiche du gras. Avec `textContent`, on voit les chevrons, comme ce que la personne a tapé. C'est plus simple, et ça évite qu'un message casse la page.
 
 2. Pourquoi trois fichiers plutôt qu'un seul ?
-   Chaque fichier a un rôle : `brain.js` décide et valide, sans toucher à la page ; `view.js` affiche ; `app.js` relie le formulaire, la mémoire et les deux autres. On peut tester le cerveau avec `npm test`, sans navigateur. Un seul fichier mélangerait tout et rendrait les diffs plus difficiles à relire.
+   Au début on avait tout dans `app.js` et c'était déjà dur à relire. Là, `brain.js` décide (sans toucher à l'écran), `view.js` affiche, `app.js` relie le formulaire et la mémoire. Du coup on a pu tester le cerveau avec `npm test` sans ouvrir le navigateur. Un seul fichier, on n'aurait jamais su qui fait quoi dans le diff.
 
 3. L'agent a écrit le code : comment savez-vous qu'il est juste, et qu'est-ce qui l'a vu échouer ?
-   On l'a relu diff par diff, on l'a essayé dans le navigateur, puis on a écrit des tests. Le test de la limite a échoué exprès quand on a changé 250 en 260 (`true !== false`). C'est ce rouge, puis le vert après réparation, qui montrent que le contrôle voit vraiment la règle.
+   On ne s'est pas contentés de « ça a l'air de marcher ». On a relu chaque diff, on a tapé salut / vide / cerise dans la page, et on a écrit des tests. Le moment où on a vraiment vu que c'était juste, c'est quand on a cassé la limite exprès (250 → 260) : le test `accepte 250 caractères et refuse 251` est devenu rouge (`true !== false`). Après remise à 250, tout était vert. Sans ce rouge, on n'aurait pas su si le test vérifiait vraiment notre cahier.
 
 4. Quelle astuce avez-vous le plus utilisée aujourd'hui, et laquelle avez-vous oubliée ?
-   La plus utilisée : les petits pas (un changement, un diff, un verdict) et le journal de décisions. Aujourd'hui s'ajoute le test vu rouge. Oubliée : demander à l'agent « je ne sais pas » avec une référence fichier/ligne, plutôt que d'accepter une explication vague.
+   Celle qu'on a le plus utilisée : les petits pas. Une demande, un diff, on dit oui ou non, on note dans le journal. Sans ça on aurait tout mélangé. On a aussi fini par voir un test échouer, ce qu'on n'avait pas fait le matin. Celle qu'on a un peu oubliée : forcer l'agent à dire « je ne sais pas » avec le fichier et la ligne. Sur `package-lock.json` il l'a fait tout seul en J1-05 ; plus tôt dans la journée on acceptait trop vite ses explications.
 
 ## Aides utilisées
 
 - Indices, aide-mémoire, voisins : fiches J1-02 à J1-10, `tests/server.test.js`, aide-mémoire JavaScript (Tester, textContent), notice dsh.
-- Ce que j'ai demandé à une IA, et comment j'ai vérifié sa réponse : écrire `brain.test.js`, aligner le cahier b10, créer `chatbot-v2` à `v4`, ajouter `header`/`section`/`footer`, lister `atelier` via dsh. Vérifications : `npm test` 14/14 ; v1–v4 dans le navigateur ; `dsh --profile headless "Reponds uniquement OK"` → `OK` ; consigne de listage dsh vérifiée fichier par fichier dans l'éditeur. Aucune clé collée.
+- Ce que j'ai demandé à une IA, et comment j'ai vérifié : surtout le cerveau, les tests, les versions v2 à v4 du chatbot, et le listage dsh. On n'a pas pris sa parole : `npm test` (14/14), essais dans le navigateur, et dsh qui a répondu `OK` puis listé les fichiers. On a ouvert chaque fichier cité pour voir s'il existait vraiment. La clé n'est nulle part dans le carnet.
 
 ## Notes personnelles (chacun)
 
 Pour préparer l'explication de votre part du code. Chacun écrit avec ses mots.
 
 - Nom : Arthur BRIOT
-- Ce que j'ai compris : `app.js` écoute le formulaire, appelle `validateMessage`, pousse deux objets dans `historique`, enregistre sous `capweb.historique`, puis demande à `view.js` d'afficher. `brain.js` ne connaît que le texte : trim, limite 250, mots exacts (`cerise`, `prairie`). Les tests comparent des réponses entre elles, sans coller le texte du bot. `loadHistory` exige exactement deux clés : si on en ajoute une troisième, `Object.keys(item).length === 2` est faux, l'historique est jeté et la conversation repart vide. `historique.length = 0` vide le même tableau (la référence reste celle déjà affichée / stockée). `replaceChildren(...lines)` remplace tous les `li` d'un coup ; sans les trois points, on passerait un tableau au lieu des éléments.
-- Ce que je n'ai pas encore compris : à relire à voix haute sans l'éditeur, surtout le `try/catch` autour de `JSON.parse`.
+- Ce que j'ai compris : `app.js` c'est le chef d'orchestre. Il écoute Envoyer, demande à `brain.js` si le message est bon, range l'historique, et demande à `view.js` d'afficher. Le cerveau ne voit pas la page, juste le texte (250 caractères, cerise, prairie). Si on ajoute une troisième clé dans un message sauvé, `loadHistory` jette tout et on repart à zéro. `historique.length = 0` vide le tableau sans en créer un autre. Les `...` dans `replaceChildren` servent à sortir les `li` un par un, sinon ça n'affiche pas ce qu'on croit.
+- Ce que je n'ai pas encore compris : je dois encore m'entraîner à dire à voix haute, sans l'écran, pourquoi `JSON.parse` est dans un `try/catch`. Je sais que ça casse si ce n'est pas du JSON, mais je mélange encore un peu avec le `if (!isValid)`.
 
 - Nom : Bouchra BENBELKACEM
-- Ce que j'ai compris : `validateMessage` rend `{ ok, value }` ou `{ ok, error }`. `replyTo` compare le mot en minuscules, d'où `SALUT` = `salut` et `CERISE` = `cerise`. « prairie » a sa réponse ; une phrase inconnue tombe sur le repli. `view.js` crée les `li` avec `textContent`, jamais `innerHTML`. Le serveur ne sert que les chemins de `FICHIERS` : un fichier dans `public/` oublié de la liste donne 404, même s'il est sur le disque. `TYPES` donne le MIME. C'est pour ça qu'on a ajouté `js/brain.js` et `js/view.js` dans `server/app.js`.
-- Ce que je n'ai pas encore compris : à vérifier à l'oral, la différence `assert.equal` (valeur simple) / `assert.deepEqual` (objet).
+- Ce que j'ai compris : `validateMessage` dit oui ou non. `replyTo` met le mot en minuscules, donc `CERISE` marche comme `cerise`. Si on écrit n'importe quoi, on a le message « je n'ai pas compris ». L'affichage utilise `textContent`, c'est pour ça que le gras tapé reste du texte. Le serveur a une liste : s'il manque `brain.js` dans `FICHIERS`, on a un 404, même si le fichier est dans `public/`. On l'a appris en ajoutant `view.js`.
+- Ce que je n'ai pas encore compris : `assert.equal` et `assert.deepEqual`, je confonds encore. Je dois pouvoir dire : equal pour un vrai/faux ou une phrase, deepEqual pour l'objet `{ ok: true, value: 'salut' }`.
 
 Git sert à sauvegarder chaque étape acceptée : lisez les différences et nommez les fichiers à enregistrer, jamais `git add -A`. Attendez la consigne du formateur avant tout envoi vers un dépôt commun.
 

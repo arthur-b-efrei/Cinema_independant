@@ -52,15 +52,22 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-03 · 💥 Ça marche… jusqu'à quand — [fiche](checkpoints/J1-03-jusqua-quand.md)
 
-- [ ] Validé
+- [X] Validé
 - Liste de contrôle de la version 1 (cinq à huit comportements essayés) :
+  - [x] Le bouton « Envoyer » ajoute le message de l'utilisateur à la conversation.
+  - [x] La touche Entrée envoie le message.
+  - [x] Le bot répond à une salutation comme « Bonjour ».
+  - [x] Le bot affiche la liste des films disponibles.
+  - [x] Le bot donne les horaires des séances.
+  - [x] Le bot fournit le résumé d'un film lorsqu'on indique son titre.
+  - [x] Les trois boutons de suggestion envoient leur question.
 - Journal des régressions, une entrée par modification : ce que j'ai demandé · ce qui marche maintenant · ce qui marchait et ne marche plus · ce que je n'avais pas vu, et comment je l'ai trouvé.
-  - Modification 1 :
-  - Modification 2 :
-  - Modification 3 :
-- Chasse à l'angle mort (ce qui a été trouvé, et par qui) :
-- Deux phrases de conclusion :
-- Difficulté qui reste :
+  - Modification 1 : « Ajoute un bouton “Effacer” qui vide toute la conversation. » · À tester dans `chatbot-v2.html` · Régression non encore vérifiée · Je dois reprendre toute la liste de contrôle après la modification.
+  - Modification 2 : « Garde les messages après le rechargement de la page. » · À tester dans `chatbot-v3.html` avec F5 · Régression non encore vérifiée · Je dois aussi vérifier que le bouton « Effacer » supprime bien les messages enregistrés.
+  - Modification 3 : « Refuse les messages de plus de 300 caractères et affiche une explication. » · À tester dans `chatbot-v4.html` · Régression non encore vérifiée · Je dois essayer exactement 300 puis 301 caractères.
+- Chasse à l'angle mort (ce qui a été trouvé, et par qui) : pas encore réalisée. Il reste à essayer un message vide, un message de 500 caractères, `<b>gras</b>`, deux messages très rapides, un rechargement et une fenêtre de 360 px.
+- Deux phrases de conclusion : je ne peux pas encore déterminer quelle modification a cassé le plus de choses, car les versions 2 à 4 n'existent pas encore. Sans la liste de contrôle, je risquerais de vérifier seulement la nouveauté et de ne pas voir qu'un ancien comportement ne fonctionne plus.
+- Difficulté qui reste : créer `chatbot-v2.html`, `chatbot-v3.html` et `chatbot-v4.html`, puis tester chaque version avant de valider ce checkpoint.
 
 ### J1-04 · 🎲 Même prompt, autre réponse — [fiche](checkpoints/J1-04-meme-prompt.md)
 

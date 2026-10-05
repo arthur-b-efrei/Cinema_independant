@@ -100,14 +100,50 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-06 · 🧱 Anatomie d'un prompt — [fiche](checkpoints/J1-06-anatomie-dun-prompt.md)
 
-- [ ] Validé
-- Preuve (deux prompts, deux résultats, grille remplie, commit du squelette) :
-- Prompt vague et ce que montre la page (trois lignes, fichiers touchés) :
+- [X] Validé
+- Preuve (deux prompts, deux résultats, grille remplie, commit du squelette) : les deux essais ont été réalisés successivement. Le résultat vague a été testé puis annulé ; le résultat structuré est conservé dans les trois fichiers autorisés. `npm test` réussit avec 9 tests sur 9, la page s'affiche à `http://127.0.0.1:3000` et le squelette est sauvegardé dans le commit `af562d6`.
+- Prompt vague et ce que montre la page (trois lignes, fichiers touchés) : « Écris la page de Cap Web : un formulaire, une liste de messages et un statut. »
+  - La page montrait un statut « Prêt à discuter », une zone de conversation vide et un formulaire.
+  - L'envoi ajoutait directement le texte à la conversation et affichait « Message envoyé ».
+  - `public/index.html`, `public/styles.css` et `public/js/app.js` avaient changé, mais les identifiants demandés pour la suite n'étaient pas présents.
 - Prompt structuré, en six parties, tel qu'envoyé :
+
+  **RÔLE :** Tu es développeur web. Tu écris du HTML, du CSS et du JavaScript sans bibliothèque, pour des débutants.
+
+  **TÂCHE :** Écris le squelette de la page de « Cap Web », un assistant sur le cinéma indépendant : un formulaire, une liste de messages, une ligne de statut.
+
+  **CONTRAINTES :**
+  - Modifie uniquement `public/index.html`, `public/styles.css` et `public/js/app.js`. Le serveur ne sert que ces trois fichiers : n'en crée aucun autre.
+  - Garde ces identifiants : `form#chat-form`, `textarea#message`, `ul#messages`, `p#status`.
+  - Le champ `#message` est limité à 300 caractères avec `maxlength`.
+  - Le contenu est dans un `main`. Un seul `h1` « Cap Web », un label lié au champ, un bouton « Envoyer », `p#status` avec `role="status"` et `html lang="fr"`. Aucune bibliothèque, aucune adresse `https://`.
+
+  **FORMAT DE SORTIE :** d'abord la liste de tes hypothèses, cinq au plus, puis tu t'arrêtes. Après mon « ok », tu écris les trois fichiers, puis tu réponds par la liste des fichiers écrits.
+
+  **EXEMPLES ET CONTRE-EXEMPLES :** voulu : `<button type="submit">Envoyer</button>`. Refusé : `<div onclick="envoyer()">Envoyer</div>` car ce n'est pas un bouton ; refusé aussi : un fichier `script.js` à côté de `app.js`, car le serveur répondrait 404.
+
+  **CRITÈRE D'ARRÊT :** `app.js` empêche seulement le rechargement de la page à l'envoi et écrit alors « Interface prête. » dans le statut ; il n'ajoute aucun message à la liste. Quand les trois fichiers sont écrits, tu t'arrêtes.
 - Les hypothèses de l'agent, et ma réponse :
+  1. La liste des messages est vide au chargement.
+  2. Le statut est vide au chargement.
+  3. Le thème est indiqué par un court texte d'introduction.
+  4. Le JavaScript ne simule aucune réponse du chatbot.
+  5. Le style reste simple et ne dépend d'aucune ressource externe.
+  
+  Ma réponse : « ok, garde bien la liste et le statut vides au chargement, puis écris seulement les trois fichiers autorisés. »
 - La grille (✔ ou ✘ et un mot, pour « vague » puis « structuré ») :
-- Une phrase : entre les deux résultats, ce qui a le plus changé, c'est… parce que la partie… de mon prompt disait…
-- Difficulté qui reste :
+
+  | Critère | Prompt vague | Prompt structuré |
+  |---|---|---|
+  | La page s'affiche sans erreur | ✔ affichage | ✔ affichage vérifié |
+  | Formulaire, liste et statut avec les quatre identifiants | ✘ identifiants différents | ✔ quatre identifiants |
+  | Seuls les trois fichiers autorisés ont changé | ✔ trois fichiers | ✔ trois fichiers |
+  | `npm test` reste vert | ✔ 9/9 | ✔ 9/9 |
+  | Aucune bibliothèque, aucune adresse `https://` | ✔ aucune | ✔ aucune |
+  | Chaque partie de la page est explicable en une phrase | ✔ simple | ✔ responsabilités précises |
+
+- Une phrase : entre les deux résultats, ce qui a le plus changé, c'est la précision de la structure HTML et du comportement JavaScript, parce que les parties « Contraintes » et « Critère d'arrêt » de mon prompt donnaient les identifiants exacts et interdisaient d'ajouter les messages.
+- Difficulté qui reste : dsh n'étant pas encore relié à `capweb-ia`, les deux essais ont été réalisés dans cette conversation ; il faudra terminer J1-05 pour refaire l'exercice dans dsh si le formateur l'exige.
 
 ### J1-07 · 👣 Petits pas — [fiche](checkpoints/J1-07-petits-pas.md)
 

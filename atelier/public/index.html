@@ -7,28 +7,36 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+  <header>
+    <p>Assistant pour un cinéma indépendant</p>
+  </header>
   <main>
     <h1>Cap Web</h1>
     <p>Votre assistant pour découvrir les films et les séances d'un cinéma indépendant.</p>
 
-    <ul id="messages" aria-label="Messages de la conversation"></ul>
+    <section aria-label="Conversation">
+      <ul id="messages" aria-label="Messages de la conversation"></ul>
 
-    <form id="chat-form">
-      <label for="message">Votre message (250 caractères maximum)</label>
-      <textarea id="message" name="message" maxlength="250"></textarea>
-      <button type="submit">Envoyer</button>
-    </form>
+      <form id="chat-form">
+        <label for="message">Votre message (250 caractères maximum)</label>
+        <textarea id="message" name="message" maxlength="250"></textarea>
+        <button type="submit">Envoyer</button>
+      </form>
+    </section>
 
-    <div class="questions" aria-label="Questions suggérées">
+    <section class="questions" aria-label="Questions suggérées">
       <button type="button" data-question="Quels films sont disponibles ?">Films disponibles</button>
       <button type="button" data-question="Quels sont les horaires ?">Horaires</button>
       <button type="button" data-question="Peux-tu résumer un film ?">Résumé d'un film</button>
-    </div>
+    </section>
 
     <button type="button" id="effacer">Effacer la conversation</button>
 
     <p id="status" role="status"></p>
   </main>
+  <footer>
+    <p>Cap Web · J1 Appareillage</p>
+  </footer>
   <script type="module" src="./js/app.js"></script>
 </body>
 </html>

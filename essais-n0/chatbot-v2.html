@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CinéIndé - Assistant cinéma indépendant</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #111318;
+      color: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .app {
+      width: min(980px, 100%);
+      height: min(760px, 92vh);
+      background: #1b1e25;
+      border: 1px solid #333842;
+      border-radius: 22px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      box-shadow: 0 24px 70px rgba(0,0,0,.45);
+    }
+    .sidebar {
+      padding: 28px 22px;
+      background: #17191f;
+      border-right: 1px solid #30343d;
+    }
+    .brand { font-size: 25px; font-weight: 800; margin-bottom: 8px; }
+    .brand span { color: #f0b44d; }
+    .subtitle { color: #aeb4c0; font-size: 14px; line-height: 1.5; margin-bottom: 28px; }
+    .sidebar h3 { font-size: 13px; text-transform: uppercase; color: #777f8e; letter-spacing: 1px; }
+    .film-card {
+      background: #222630;
+      border-radius: 14px;
+      padding: 14px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .film-card:hover { transform: translateY(-2px); border-color: #f0b44d; }
+    .film-title { font-weight: 700; margin-bottom: 5px; }
+    .film-meta { color: #969daa; font-size: 12px; }
+
+    .chat { display: flex; flex-direction: column; min-width: 0; }
+    .chat-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #30343d;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .bot-icon {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: #f0b44d; color: #17191f; font-size: 22px;
+    }
+    .chat-header strong { display: block; }
+    .online { color: #8fcf9b; font-size: 12px; margin-top: 3px; }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .message {
+      max-width: 78%;
+      padding: 13px 16px;
+      line-height: 1.45;
+      border-radius: 16px;
+      white-space: pre-line;
+      font-size: 15px;
+    }
+    .bot { background: #292e38; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .user { background: #f0b44d; color: #17191f; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .suggestions {
+      padding: 0 24px 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .suggestions button {
+      background: transparent;
+      border: 1px solid #4b515d;
+      color: #dce0e7;
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .suggestions button:hover { border-color: #f0b44d; color: #f0b44d; }
+    .input-area {
+      border-top: 1px solid #30343d;
+      padding: 16px 20px;
+      display: flex;
+      gap: 10px;
+    }
+    input {
+      flex: 1;
+      border: 1px solid #3c424d;
+      background: #242832;
+      color: white;
+      border-radius: 12px;
+      padding: 13px 15px;
+      outline: none;
+      font-size: 15px;
+    }
+    input:focus { border-color: #f0b44d; }
+    .send, .clear {
+      border: 0;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 0 18px;
+      cursor: pointer;
+    }
+    .send {
+      background: #f0b44d;
+      color: #17191f;
+    }
+    .clear {
+      background: #3c424d;
+      color: #dce0e7;
+    }
+    @media (max-width: 720px) {
+      body { padding: 0; }
+      .app { height: 100vh; border-radius: 0; grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">Ciné<span>Indé</span></div>
+    <div class="subtitle">Découvrez notre sélection de films indépendants et trouvez votre prochaine séance.</div>
+    <h3>À l'affiche</h3>
+    <div id="filmList"></div>
+  </aside>
+
+  <main class="chat">
+    <div class="chat-header">
+      <div class="bot-icon">🎬</div>
+      <div>
+        <strong>Assistant CinéIndé</strong>
+        <div class="online">● En ligne</div>
+      </div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="message bot">Bonjour ! Je suis l'assistant de CinéIndé. 🎥
+Je peux vous renseigner sur les films disponibles, les horaires des séances et vous donner un résumé de chaque film.
+
+Que souhaitez-vous savoir ?</div>
+    </div>
+
+    <div class="suggestions">
+      <button onclick="ask('Quels films sont disponibles ?')">🎞️ Films disponibles</button>
+      <button onclick="ask('Quels sont les horaires ?')">🕒 Horaires</button>
+      <button onclick="ask('Résume-moi Les Ombres du Matin')">📝 Résumé d'un film</button>
+    </div>
+
+    <form class="input-area" id="chatForm">
+      <input id="userInput" autocomplete="off" placeholder="Posez votre question..." />
+      <button class="send" type="submit">Envoyer</button>
+      <button class="clear" type="button" id="effacer">Effacer</button>
+    </form>
+  </main>
+</div>
+
+<script>
+const films = [
+  {
+    title: "Les Ombres du Matin",
+    genre: "Drame",
+    duration: "1h42",
+    times: ["14:00", "18:15", "21:00"],
+    summary: "Dans une petite ville côtière, une jeune photographe revient sur les traces de son enfance et découvre un secret familial qui bouleverse sa vision du passé."
+  },
+  {
+    title: "L'Écho des Rues",
+    genre: "Documentaire",
+    duration: "1h28",
+    times: ["13:30", "17:00", "20:15"],
+    summary: "Un documentaire qui suit plusieurs artistes de rue et explore la manière dont ils transforment les espaces urbains en lieux d'expression et de rencontre."
+  },
+  {
+    title: "Après la Pluie",
+    genre: "Romance",
+    duration: "1h55",
+    times: ["15:15", "19:00", "21:30"],
+    summary: "Deux inconnus se rencontrent par hasard après un orage. Au fil de leurs promenades, une relation inattendue se construit entre souvenirs, choix et nouveaux départs."
+  },
+  {
+    title: "Le Dernier Projecteur",
+    genre: "Comédie dramatique",
+    duration: "1h36",
+    times: ["16:00", "18:45"],
+    summary: "Le propriétaire d'un vieux cinéma de quartier tente de sauver sa salle menacée de fermeture avec l'aide d'une équipe aussi passionnée qu'imprévisible."
+  }
+];
+
+const filmList = document.getElementById("filmList");
+const messages = document.getElementById("messages");
+const input = document.getElementById("userInput");
+
+films.forEach(film => {
+  const card = document.createElement("div");
+  card.className = "film-card";
+  card.innerHTML = `<div class="film-title">${film.title}</div>
+                    <div class="film-meta">${film.genre} • ${film.duration}</div>`;
+  card.onclick = () => ask(`Donne-moi les informations sur ${film.title}`);
+  filmList.appendChild(card);
+});
+
+function normalize(text) {
+  return text.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function findFilm(question) {
+  const q = normalize(question);
+  return films.find(f => q.includes(normalize(f.title)));
+}
+
+function getAnswer(question) {
+  const q = normalize(question);
+  const film = findFilm(question);
+
+  if (q.includes("bonjour") || q.includes("salut") || q === "hello") {
+    return "Bonjour ! 🎬 Comment puis-je vous aider ? Vous pouvez me demander les films disponibles, les horaires ou le résumé d'un film.";
+  }
+
+  if (film) {
+    if (q.includes("horaire") || q.includes("seance") || q.includes("heure")) {
+      return `🕒 ${film.title}\nSéances : ${film.times.join(" • ")}`;
+    }
+    if (q.includes("resume") || q.includes("histoire") || q.includes("parle") || q.includes("synopsis")) {
+      return `📝 ${film.title}\n${film.summary}`;
+    }
+    return `🎬 ${film.title}\nGenre : ${film.genre}\nDurée : ${film.duration}\nSéances : ${film.times.join(" • ")}\n\n${film.summary}`;
+  }
+
+  if (q.includes("film") && (q.includes("disponible") || q.includes("affiche") || q.includes("programme"))) {
+    return "🎞️ Films actuellement disponibles :\n\n" +
+      films.map(f => `• ${f.title} — ${f.genre}, ${f.duration}`).join("\n");
+  }
+
+  if (q.includes("horaire") || q.includes("seance") || q.includes("heure")) {
+    return "🕒 Horaires des séances :\n\n" +
+      films.map(f => `• ${f.title} : ${f.times.join(" • ")}`).join("\n");
+  }
+
+  if (q.includes("resume") || q.includes("synopsis")) {
+    return "Bien sûr. De quel film souhaitez-vous le résumé ?\n\n" +
+      films.map(f => `• ${f.title}`).join("\n");
+  }
+
+  if (q.includes("merci")) {
+    return "Avec plaisir ! 🍿 Bonne séance et à bientôt chez CinéIndé.";
+  }
+
+  return "Je n'ai pas bien compris votre demande. Je peux répondre à des questions comme :\n• Quels films sont disponibles ?\n• Quels sont les horaires ?\n• Résume-moi Les Ombres du Matin.";
+}
+
+const WELCOME = `Bonjour ! Je suis l'assistant de CinéIndé. 🎥
+Je peux vous renseigner sur les films disponibles, les horaires des séances et vous donner un résumé de chaque film.
+
+Que souhaitez-vous savoir ?`;
+
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = `message ${type}`;
+  div.textContent = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function clearConversation() {
+  messages.replaceChildren();
+  addMessage(WELCOME, "bot");
+}
+
+function ask(question) {
+  addMessage(question, "user");
+  input.value = "";
+  setTimeout(() => addMessage(getAnswer(question), "bot"), 300);
+}
+
+document.getElementById("chatForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const question = input.value.trim();
+  if (question) ask(question);
+});
+
+document.getElementById("effacer").addEventListener("click", clearConversation);
+</script>
+</body>
+</html>

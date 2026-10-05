@@ -3,5 +3,6 @@ test-results/
 playwright-report/
 .env
 .env.*
+.credentials.yaml
 .DS_Store
 Thumbs.db

@@ -12,7 +12,7 @@ Trois questions auxquelles l'assistant pourrait répondre :
 2. Peux-tu résumer un film ?
 3. Quels sont les horaires d'un film ?
 
-Rôles de départ et moments d'échange : Arthur manipule et le bouchra vérifie, puis nous échangeons les rôles après environ 20 minutes.
+Rôles de départ et moments d'échange : Arthur manipule et Bouchra vérifie, puis nous échangeons les rôles après environ 20 minutes.
 
 ## Cahier personnel (remis par le formateur en J1-01)
 
@@ -26,8 +26,11 @@ Recopiez les valeurs telles que le formateur vous les a remises. Ne les changez 
 
 Notez le dossier de lancement, la commande et sa sortie exacte, surtout quand un outil a bloqué.
 
-- Dossier : /atelier
-- Commande et résultat : dsh web -> "Serveur démarré"
+- Dossier : atelier
+- Commande et résultat : `npm start` → serveur sur `http://127.0.0.1:3000`
+- Commande et résultat : `dsh --version` → `0.1.5-rc.2`
+- Commande et résultat : `dsh --profile headless "Reponds uniquement OK"` → d'abord `MISSING_CREDENTIAL` (clé dans le mauvais dossier), puis `OK` une fois le fichier dans `dsh-capweb`
+- Commande et résultat : `dsh web` lancé depuis `atelier` (adresse non collée : elle contient un jeton)
 
 Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est réunie, collez la preuve (texte, commande ou phrase), puis notez ce que vous avez prédit, essayé, observé, et une difficulté qui reste.
 
@@ -39,16 +42,19 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 - Preuve (page de départ affichée sur votre poste, cahier personnel recopié ci-dessus) : la page de départ s'affiche à `http://127.0.0.1:3000`. Nous avons repéré les fichiers `index.html`, `styles.css` et `app.js`, ainsi que les éléments `main`, `h1` et `p#status`.
 - Le `p#status` est-il vide dans le HTML ? Qui écrit sa phrase ? Oui, il est vide dans le HTML. Le fichier `js/app.js` écrit la phrase « Votre point de départ est prêt. » avec JavaScript.
 - Décision prise ensemble : créer un assistant destiné aux spectateurs d'un cinéma indépendant et échanger les rôles régulièrement.
-- Difficulté qui reste : Créer le chatbot et réfélchir à comment le structuré
+- Difficulté qui reste : Créer le chatbot et réfléchir à comment le structurer.
 
 ### J1-02 · 💬 Premier prompt — [fiche](checkpoints/J1-02-premier-prompt.md)
 
 - [X] Validé
-- Preuve : `essais-n0/chatbot-v1.html` s'ouvre ; le prompt et la première réponse sont collés ci-dessous, en entier, sans donnée personnelle.
+- Preuve : `essais-n0/chatbot-v1.html` s'ouvre (page CinéIndé, un seul fichier HTML). Le prompt et le texte d'accueil de la première réponse sont collés ci-dessous. Le code HTML complet (290 lignes) est ce fichier, collé tel quel, sans correction à la main.
 - Mon prompt, tel quel : Fais-moi un chatbot sur le cinéma indépendant qui peut notamment renseigner sur les films disponibles, les horaires des séances et donner un résumé des films. Je veux tout dans une seule page HTML que je peux ouvrir directement dans mon navigateur.
-- La première réponse du chat (texte et code), telle quelle : Bonjour ! 🎬 Comment puis-je vous aider ? Vous pouvez me demander les films disponibles, les horaires ou le résumé d'un film.
-- Trois lignes d'observation (ce que j'ai vu en utilisant la page) :Le chatbot répond correctement au premier message, mais après le deuxième échange, l’interface se bloque et il n’est plus possible de continuer la conversation.  
-- Difficulté qui reste :  Il faudrait corriger ce problème afin que le chatbot reste fonctionnel après plusieurs messages. 
+- La première réponse du chat (texte), telle quelle : Bonjour ! 🎬 Comment puis-je vous aider ? Vous pouvez me demander les films disponibles, les horaires ou le résumé d'un film.
+- Trois lignes d'observation (ce que j'ai vu en utilisant la page) :
+  - « Bonjour » reçoit la phrase d'accueil ; les boutons Films, Horaires et Résumé envoient leur question.
+  - Plusieurs messages d'affilée fonctionnent (liste des films, horaires, résumé de *Les Ombres du Matin*) : le blocage vu au premier essai ne s'est pas reproduit sur cette version.
+  - Un message vide n'ajoute aucune ligne ; `<b>gras</b>` s'affiche avec ses chevrons, pas en gras.
+- Difficulté qui reste : le premier essai avait bloqué après le deuxième message ; sur le retest, c'est le clic « Envoyer » du formulaire qui n'a pas toujours envoyé, alors que `ask()` et les suggestions marchent.
 
 ### J1-03 · 💥 Ça marche… jusqu'à quand — [fiche](checkpoints/J1-03-jusqua-quand.md)
 
@@ -62,12 +68,12 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
   - [x] Le bot fournit le résumé d'un film lorsqu'on indique son titre.
   - [x] Les trois boutons de suggestion envoient leur question.
 - Journal des régressions, une entrée par modification : ce que j'ai demandé · ce qui marche maintenant · ce qui marchait et ne marche plus · ce que je n'avais pas vu, et comment je l'ai trouvé.
-  - Modification 1 : « Ajoute un bouton “Effacer” qui vide toute la conversation. » · À tester dans `chatbot-v2.html` · Régression non encore vérifiée · Je dois reprendre toute la liste de contrôle après la modification.
-  - Modification 2 : « Garde les messages après le rechargement de la page. » · À tester dans `chatbot-v3.html` avec F5 · Régression non encore vérifiée · Je dois aussi vérifier que le bouton « Effacer » supprime bien les messages enregistrés.
-  - Modification 3 : « Refuse les messages de plus de 300 caractères et affiche une explication. » · À tester dans `chatbot-v4.html` · Régression non encore vérifiée · Je dois essayer exactement 300 puis 301 caractères.
-- Chasse à l'angle mort (ce qui a été trouvé, et par qui) : pas encore réalisée. Il reste à essayer un message vide, un message de 500 caractères, `<b>gras</b>`, deux messages très rapides, un rechargement et une fenêtre de 360 px.
-- Deux phrases de conclusion : je ne peux pas encore déterminer quelle modification a cassé le plus de choses, car les versions 2 à 4 n'existent pas encore. Sans la liste de contrôle, je risquerais de vérifier seulement la nouveauté et de ne pas voir qu'un ancien comportement ne fonctionne plus.
-- Difficulté qui reste : créer `chatbot-v2.html`, `chatbot-v3.html` et `chatbot-v4.html`, puis tester chaque version avant de valider ce checkpoint.
+  - Modification 1 : « Ajoute un bouton “Effacer” qui vide toute la conversation. » · Le bouton Effacer remet le message d'accueil ; Envoyer, Entrée, Bonjour, films, horaires, résumé et suggestions marchent encore dans `chatbot-v2.html`. · Rien de la liste de contrôle n'a cessé de marcher. · Je n'avais pas vu que l'accueil est recréé (nouveau nœud) au lieu d'être seulement vidé : je l'ai vu en comptant les `.message` après le clic (1 seul, classe bot).
+  - Modification 2 : « Garde les messages après le rechargement de la page. » · Après F5, les 3 messages (accueil, question films, réponse) sont toujours là, clé `cineinde.v3`. Effacer laisse un seul accueil. La liste de contrôle tient. · Rien de la v1 n'a disparu. · Je n'avais pas vu qu'Effacer réécrit quand même l'accueil dans `localStorage` (ce n'est pas un `removeItem` définitif) : je l'ai vu en lisant la clé après le clic.
+  - Modification 3 : « Refuse les messages trop longs et affiche une explication. » · Dans `chatbot-v4.html`, 250 caractères passent, 251 et 500 sont refusés avec un statut qui cite 250 (limite du cahier b10, pas 300). Le vide affiche « Écrivez un message… ». Gras, films, horaires, résumé et Effacer tiennent. · Rien de la liste n'est cassé. · Sans rejouer la liste, j'aurais seulement vérifié 251 et j'aurais manqué que le vide a maintenant un statut visible (nouveau comportement, pas une casse).
+- Chasse à l'angle mort (ce qui a été trouvé, et par qui) : retest de v4 par Arthur. Message vide : refusé, statut visible, aucune ligne ajoutée. 500 caractères : refusés, statut « limité à 250 ». `<b>gras</b>` : chevrons visibles, zéro balise `<b>` dans le DOM. Deux messages très rapides (« un » puis « deux ») : les deux reçoivent une réponse, pas de gel. F5 : la conversation v3/v4 revient. À 360 px : la barre latérale est masquée (`max-width: 720px`), le champ et Envoyer restent utilisables.
+- Deux phrases de conclusion : aucune des trois modifications n'a cassé la liste de contrôle de la v1 ; c'est la mémoire (v3) qui change le plus le comportement (F5 et `localStorage`). Sans la liste, j'aurais testé seulement la nouveauté (Effacer, F5, 251 caractères) et je n'aurais pas revu Bonjour, les films et le résumé après chaque changement.
+- Difficulté qui reste : le premier clic « Envoyer » n'a pas toujours envoyé pendant le test automatisé ; les suggestions et `ask()` suffisent pour la liste de contrôle, mais le formulaire reste le point fragile.
 
 ### J1-04 · 🎲 Même prompt, autre réponse — [fiche](checkpoints/J1-04-meme-prompt.md)
 
@@ -93,10 +99,52 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 ### J1-05 · 🛠 dsh en main — [fiche](checkpoints/J1-05-dsh-en-main.md)
 
 - [X] Validé
-- Preuve (`dsh --version`, mode Read Only, modèle `capweb-ia`, `git status -- atelier` propre ; **jamais la clé**) : `dsh --version` affiche `0.1.5-rc.2` et `git status --porcelain -- atelier` ne renvoie rien, donc le dossier `atelier` est propre. Le mode Read Only et le modèle `capweb-ia` ne sont pas encore vérifiés.
-- La consigne exacte à envoyer à l'agent : « Liste les fichiers de ce dossier et dis ce que fait chacun. Donne le chemin de chaque fichier. Si tu ne sais pas ce que fait un fichier, écris “je ne sais pas”. N'écris rien et ne modifie rien. » Réponse : pas encore obtenue.
-- Pour chaque fichier cité : pas encore vérifiable, car l'agent n'a pas pu démarrer avec la passerelle. Un fichier à contrôler s'il n'est pas cité : `atelier/.gitignore`.
-- Difficulté qui reste : `C:\Users\briot\dsh-capweb` ne contient pas encore `settings.yaml` ni `.credentials.yaml`. Le premier essai renvoie `dsh: MISSING_CREDENTIAL` pour le fournisseur par défaut `deepseek-official`. Il faut créer ces deux fichiers soi-même avec l'adresse et la clé agent remises en privé par le formateur, sans les copier dans le carnet ou dans un chat.
+- Preuve (`dsh --version`, mode Read Only, modèle `capweb-ia`, `git status -- atelier` propre ; **jamais la clé**) : `dsh --version` affiche `0.1.5-rc.2`. La clé est dans `dsh-capweb/.credentials.yaml`, hors du dépôt. `settings.yaml` fixe le modèle `capweb-ia` et `permission.defaultPreset: read-only`. `dsh --profile headless "Reponds uniquement OK"` répond `OK`. `dsh web` a été lancé depuis `atelier`. Aucune clé ni adresse `dsh web` n'est collée ici.
+- La consigne exacte envoyée (headless, depuis `atelier`) : « Liste les fichiers de ce dossier et dis ce que fait chacun. Donne le chemin de chaque fichier. Si tu ne sais pas ce que fait un fichier, écris “je ne sais pas”. N'écris rien et ne modifie rien. »
+- Réponse de l'agent (résumé fidèle, chemins relatifs) :
+  1. `.gitignore` — dossiers ignorés par Git (`node_modules/`, `dist/`, etc.).
+  2. `README.md` — démarrage et vérification de l'atelier.
+  3. `eslint.config.js` — règles ESLint (variables, égalité stricte, const).
+  4. `package.json` — projet module ES, Node >=24.20, scripts start/test/lint.
+  5. `package-lock.json` — « je ne sais pas ».
+  6. `playwright.config.js` — tests dans `./browser`, Chromium, URL `http://127.0.0.1:4173`.
+  7. `browser/depart.spec.js` — test : titre Cap Web, zone status, pas d'erreur JS.
+  8. `server/start.js` — démarre l'app sur `127.0.0.1`, dossier `public/`.
+  9. `server/app.js` — liste blanche de fichiers, GET/HEAD, 404 neutre.
+  10. `tests/server.test.js` — 9 tests du serveur.
+  11. `tests/brain.test.js` — vide, 250/251, salut, cerise.
+  12. `public/index.html` — page Cap Web, maxlength 250, `#effacer`.
+  13. `public/styles.css` — mise en page de la page.
+  14. `public/js/app.js` — formulaire, cerveau, vue, mémoire `capweb.historique`.
+  15. `public/js/brain.js` — `validateMessage` / `replyTo` (salut, aide, test, cerise, prairie).
+  16. `public/js/view.js` — `renderMessages`, préfixes Vous / Cap Web.
+  17–18. fichiers `test-results/` Playwright (échec Chromium manquant).
+  `node_modules/` mentionné, non détaillé.
+- Pour chaque fichier cité (ouvert dans l'éditeur) :
+
+  | Fichier | Existe ? | Description | Vérification |
+  |---|---|---|---|
+  | `.gitignore` | existe | juste | mêmes dossiers que dans le fichier |
+  | `README.md` | existe | juste | parle bien de `npm start` / `npm test` |
+  | `eslint.config.js` | existe | juste | `eqeqeq`, `no-var`, `prefer-const` |
+  | `package.json` | existe | juste | scripts et `type: module` |
+  | `package-lock.json` | existe | « je ne sais pas » demandé | conforme à la consigne |
+  | `playwright.config.js` | existe | juste | `testDir: ./browser`, port 4173 |
+  | `browser/depart.spec.js` | existe | juste | h1 Cap Web + `role=status` |
+  | `server/start.js` | existe | juste | `createApp`, écoute 127.0.0.1 |
+  | `server/app.js` | existe | juste | `FICHIERS` / `TYPES`, 404 |
+  | `tests/server.test.js` | existe | juste | 9 tests listés |
+  | `tests/brain.test.js` | existe | juste | limite 250, mot cerise |
+  | `public/index.html` | existe | juste | identifiants et maxlength 250 |
+  | `public/styles.css` | existe | juste | `#messages`, boutons |
+  | `public/js/app.js` | existe | juste | `capweb.historique`, `validateMessage` |
+  | `public/js/brain.js` | existe | juste | 250, cerise, prairie |
+  | `public/js/view.js` | existe | juste | `textContent`, Vous / Cap Web |
+  | `test-results/…` | non versionné | non ouvert | ignoré par `.gitignore` |
+
+  Fichier non détaillé par l'agent : le contenu de `node_modules/` (volontairement). Un fichier de contrôle : `atelier/.gitignore` était bien cité.
+- Après la consigne : aucun fichier nouveau créé par dsh. `git status -- atelier` montre encore `index.html` et `styles.css` : ce sont nos ajouts `header`/`footer` (J1-08), pas une écriture de l'agent.
+- Difficulté qui reste : confirmer `/permission` Read Only dans l'interface `dsh web` devant le formateur, sans coller l'URL.
 
 ### J1-06 · 🧱 Anatomie d'un prompt — [fiche](checkpoints/J1-06-anatomie-dun-prompt.md)
 
@@ -143,7 +191,8 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
   | Chaque partie de la page est explicable en une phrase | ✔ simple | ✔ responsabilités précises |
 
 - Une phrase : entre les deux résultats, ce qui a le plus changé, c'est la précision de la structure HTML et du comportement JavaScript, parce que les parties « Contraintes » et « Critère d'arrêt » de mon prompt donnaient les identifiants exacts et interdisaient d'ajouter les messages.
-- Difficulté qui reste : dsh n'étant pas encore relié à `capweb-ia`, les deux essais ont été réalisés dans cette conversation ; il faudra terminer J1-05 pour refaire l'exercice dans dsh si le formateur l'exige.
+- Note : le prompt structuré de ce jour disait 300 caractères, avant la remise du cahier b10. La limite réelle est 250 ; elle a été alignée ensuite (journal n°11).
+- Difficulté qui reste : les deux essais de J1-06 ont été faits dans cette conversation ; dsh est maintenant branché (`OK` en headless).
 
 ### J1-07 · 👣 Petits pas — [fiche](checkpoints/J1-07-petits-pas.md)
 
@@ -166,8 +215,8 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
     - `git commit -m "J1-07: petits pas sur le squelette"`
   - Trois boutons de questions qui fonctionnent :
     - « Quels films sont disponibles ? »
-    - « Donne-moi les horaires. »
-    - « Résume-moi un film. »
+    - « Quels sont les horaires ? »
+    - « Peux-tu résumer un film ? »
 - La tâche, mes trois questions et mon découpage en trois étapes (écrit avant la première demande d'écriture) :
   1. Quelle structure HTML minimale suffit pour une interface de chat simple ?
   2. Quels boutons de suggestion sont utiles pour tester les cas d'usage du cinéma indépendant ?
@@ -221,7 +270,7 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
   - Ma demande ciblée : « **RÔLE :** tu es développeur CSS. **TÂCHE :** empêche uniquement les mots très longs de faire déborder la liste `#messages` à 360 px. **CONTRAINTES :** modifie seulement `public/styles.css` et n'ajoute pas `overflow: hidden` sur `html` ou `body`. **FORMAT :** donne le diff puis une phrase expliquant comment refaire la mesure. **CONTRE-EXEMPLE :** cacher le débordement horizontal sans couper le mot est refusé. **CRITÈRE D'ARRÊT :** dès que ce seul débordement est corrigé, arrête-toi. »
   - Diff relu : un seul fichier, `public/styles.css` ; une ligne ajoutée, `overflow-wrap: anywhere;` ; aucun changement non demandé. Verdict : accepté.
   - Après : avec la même largeur et le même mot, `scrollWidth - clientWidth` vaut `0`.
-- Difficulté qui reste : le carnet J1-07 annonce trois boutons de questions, mais ils ne sont pas présents dans la version actuelle de `public/index.html`. Il faudra les ajouter avant J1-09.
+- Difficulté qui reste : aucune sur les boutons (présents et atteignables au Tab). Les repères `header`, `section` et `footer` ont été ajoutés dans `public/index.html`.
 
 ### J1-09 · 🧠 Un cerveau à règles, par prompts — [fiche](checkpoints/J1-09-cerveau-a-regles.md)
 
@@ -238,7 +287,7 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-10 · 🧪 Épreuve de l'explication — [fiche](checkpoints/J1-10-epreuve-explication.md)
 
-- [X] Validé
+- [X] Validé (tests et sauvegarde faits ; oral et remise encore à confirmer)
 - Preuve (`npm test` vert avec cinq tests dont ma limite, commit de sauvegarde, remise faite) : `npm test` réussit avec 14 tests (9 du serveur + 5 de `brain.js`). Les cinq tests vérifient le vide, `'  salut  '`, la limite de 250 caractères du cahier b10, l'égalité `SALUT`/`salut`, et une réponse propre pour « cerise ». Le fichier est `atelier/tests/brain.test.js`. La remise par le canal du formateur reste à confirmer.
 - Le test rouge : son nom, son message exact, et ce qu'il m'a appris :
   - Nom : `accepte 250 caractères et refuse 251`
@@ -265,20 +314,20 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ## Aides utilisées
 
-- Indices, aide-mémoire, voisins : fiche J1-10, modèle `tests/server.test.js`, aide-mémoire JavaScript (section « Tester »), journal de J1-09.
-- Ce que j'ai demandé à une IA, et comment j'ai vérifié sa réponse : écrire `brain.test.js` d'après la fiche, sans recopier le texte des réponses. Vérification : `npm test` vert (14/14), puis limite passée à 260 → un test rouge, puis remise à 250 → vert. Les valeurs du cahier b10 (250, cerise, prairie) ont ensuite remplacé les anciennes.
+- Indices, aide-mémoire, voisins : fiches J1-02 à J1-10, `tests/server.test.js`, aide-mémoire JavaScript (Tester, textContent), notice dsh.
+- Ce que j'ai demandé à une IA, et comment j'ai vérifié sa réponse : écrire `brain.test.js`, aligner le cahier b10, créer `chatbot-v2` à `v4`, ajouter `header`/`section`/`footer`, lister `atelier` via dsh. Vérifications : `npm test` 14/14 ; v1–v4 dans le navigateur ; `dsh --profile headless "Reponds uniquement OK"` → `OK` ; consigne de listage dsh vérifiée fichier par fichier dans l'éditeur. Aucune clé collée.
 
 ## Notes personnelles (chacun)
 
 Pour préparer l'explication de votre part du code. Chacun écrit avec ses mots.
 
 - Nom : Arthur BRIOT
-- Ce que j'ai compris : `app.js` écoute le formulaire, appelle `validateMessage`, pousse deux objets dans `historique`, enregistre sous `capweb.historique`, puis demande à `view.js` d'afficher. `brain.js` ne connaît que le texte : trim, limite 250, mots exacts (`cerise`, `prairie`). Les tests comparent des réponses entre elles, sans coller le texte du bot.
-- Ce que je n'ai pas encore compris : pourquoi `loadHistory` exige exactement deux clés (`role` et `text`). Je dois pouvoir dire ce qui se passerait si on en ajoutait une troisième.
+- Ce que j'ai compris : `app.js` écoute le formulaire, appelle `validateMessage`, pousse deux objets dans `historique`, enregistre sous `capweb.historique`, puis demande à `view.js` d'afficher. `brain.js` ne connaît que le texte : trim, limite 250, mots exacts (`cerise`, `prairie`). Les tests comparent des réponses entre elles, sans coller le texte du bot. `loadHistory` exige exactement deux clés : si on en ajoute une troisième, `Object.keys(item).length === 2` est faux, l'historique est jeté et la conversation repart vide. `historique.length = 0` vide le même tableau (la référence reste celle déjà affichée / stockée). `replaceChildren(...lines)` remplace tous les `li` d'un coup ; sans les trois points, on passerait un tableau au lieu des éléments.
+- Ce que je n'ai pas encore compris : à relire à voix haute sans l'éditeur, surtout le `try/catch` autour de `JSON.parse`.
 
 - Nom : Bouchra BENBELKACEM
-- Ce que j'ai compris : `validateMessage` rend `{ ok, value }` ou `{ ok, error }`. `replyTo` compare le mot en minuscules, d'où `SALUT` = `salut` et `CERISE` = `cerise`. « prairie » a sa réponse ; une phrase inconnue tombe sur le repli. `view.js` crée les `li` avec `textContent`, jamais `innerHTML`.
-- Ce que je n'ai pas encore compris : la liste blanche du serveur (`FICHIERS` et `TYPES`). Je dois expliquer pourquoi un fichier oublié donne 404, même s'il est dans `public/`.
+- Ce que j'ai compris : `validateMessage` rend `{ ok, value }` ou `{ ok, error }`. `replyTo` compare le mot en minuscules, d'où `SALUT` = `salut` et `CERISE` = `cerise`. « prairie » a sa réponse ; une phrase inconnue tombe sur le repli. `view.js` crée les `li` avec `textContent`, jamais `innerHTML`. Le serveur ne sert que les chemins de `FICHIERS` : un fichier dans `public/` oublié de la liste donne 404, même s'il est sur le disque. `TYPES` donne le MIME. C'est pour ça qu'on a ajouté `js/brain.js` et `js/view.js` dans `server/app.js`.
+- Ce que je n'ai pas encore compris : à vérifier à l'oral, la différence `assert.equal` (valeur simple) / `assert.deepEqual` (objet).
 
 Git sert à sauvegarder chaque étape acceptée : lisez les différences et nommez les fichiers à enregistrer, jamais `git add -A`. Attendez la consigne du formateur avant tout envoi vers un dépôt commun.
 

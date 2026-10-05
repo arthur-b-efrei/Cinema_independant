@@ -6,9 +6,12 @@ body {
   font-family: system-ui, sans-serif;
 }
 
-main {
+header, main, footer {
   max-width: 48rem;
   margin-inline: auto;
+}
+
+main {
   padding: 2rem;
   background: white;
   border-radius: 1rem;

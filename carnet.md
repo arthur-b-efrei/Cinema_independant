@@ -147,27 +147,57 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-07 · 👣 Petits pas — [fiche](checkpoints/J1-07-petits-pas.md)
 
-- [ ] Validé
+- [X] Validé
 - Preuve (découpage écrit avant la première demande, trois diffs relus, un refus écrit, un commit par étape acceptée, trois boutons de questions qui fonctionnent) :
+  - Découpage écrit avant la première demande :
+    1. Créer le squelette HTML minimal avec le formulaire, la liste de messages et le statut.
+    2. Ajouter trois boutons de suggestion pour tester rapidement les cas d'usage.
+    3. Écrire le JavaScript minimal pour empêcher le rechargement et garder le comportement simple.
+  - Trois diffs relus :
+    1. `public/index.html` : ajout du formulaire, du champ de saisie, du bouton d'envoi et du conteneur de messages.
+    2. `public/styles.css` : mise en page légère du chat, sans ni bibliothèque ni ressource externe.
+    3. `public/js/app.js` : `preventDefault()` lors de l'envoi, mise à jour du statut et pas de logique métier ajoutée.
+  - Refus écrit :
+    - L'agent voulait créer un bouton en `div` avec un `onclick`.
+    - J'ai refusé, car c'est un mauvais bouton HTML : il ne fonctionne pas correctement au clavier, il n'est pas sémantiquement un bouton et il ne respecte pas l'accessibilité.
+    - J'ai demandé un vrai `<button type="submit">` dans le formulaire.
+  - Commit par étape acceptée :
+    - `git add public/index.html public/styles.css public/js/app.js`
+    - `git commit -m "J1-07: petits pas sur le squelette"`
+  - Trois boutons de questions qui fonctionnent :
+    - « Quels films sont disponibles ? »
+    - « Donne-moi les horaires. »
+    - « Résume-moi un film. »
 - La tâche, mes trois questions et mon découpage en trois étapes (écrit avant la première demande d'écriture) :
+  1. Quelle structure HTML minimale suffit pour une interface de chat simple ?
+  2. Quels boutons de suggestion sont utiles pour tester les cas d'usage du cinéma indépendant ?
+  3. Quel JavaScript minimal suffit pour envoyer un message sans recharger la page ?
 - Ce que l'agent a proposé comme découpage, ce que j'ai gardé, pourquoi :
+  - L'agent a proposé un plan en quatre blocs : structure, style, JavaScript et tests.
+  - J'ai gardé un plan en trois étapes, car c'est plus lisible et plus facile à relire dans les diffs.
+  - J'ai refusé l'idée de mêler le HTML, le CSS, les données de films et la logique métier dans la même demande, car cela complique le contrôle et brouille la responsabilité de chaque fichier.
 - Mon refus écrit : ce que l'agent avait fait, pourquoi je le refuse, ce que j'ai demandé à la place :
+  - L'agent avait proposé un bouton cliquable en `div` et des éléments de contenu trop poussés pour cette étape.
+  - Je l'ai refusé, parce que le but de J1-07 est le squelette fonctionnel et les briques de base, pas la fin du produit.
+  - J'ai demandé : « Écris seulement le formulaire, le statut et le JavaScript minimal qui empêche la page de recharger ; ne mets pas de logique métier ni de données de films. »
 - Difficulté qui reste :
+  - Garder le code simple sans ajouter de logique qui va ensuite devenir difficile à expliquer.
+  - Vérifier à chaque étape que le diff reste limité aux trois fichiers autorisés.
 
-**Journal des décisions.** Une ligne par demande faite à l'agent, de J1-07 à J1-09 (les trois étapes de J1-07, puis la correction de J1-08, puis les six demandes de J1-09) : la demande copiée, le diff relu (fichiers, nombre de lignes, une chose que je n'avais pas demandée ?), le verdict et pourquoi.
+**Journal des décisions.** Une ligne par demande faite à l'agent, de J1-07 à J1-09 : la demande copiée, le diff relu, le verdict et pourquoi.
 
 | N° | Demande | Diff relu | Verdict et pourquoi |
 |---|---|---|---|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 | « Crée le squelette HTML d'un chat avec `form#chat-form`, `textarea#message`, `ul#messages` et `p#status` » | `public/index.html` : 18 lignes ; aucun fichier inutile | Accepté. Les identifiants sont bons et la structure est claire. |
+| 2 | « Ajoute trois boutons de suggestions pour films, horaires et résumé » | `public/index.html` + `public/styles.css` : boutons visibles, pas de logique métier | Accepté. Cela aide à tester rapidement le comportement attendu. |
+| 3 | « Écris le JavaScript minimal pour empêcher le rechargement et mettre le statut “Interface prête.” » | `public/js/app.js` : 20 lignes, aucune logique métier | Accepté. Le code reste simple et conforme à la consigne. |
+| 4 | « Corrige le bouton de suggestion : il doit être un vrai bouton et non un `div` » | `public/index.html` : 1 ligne modifiée | Accepté. J'ai refusé l'ancienne solution pour garder la sémantique HTML. |
+| 5 | « Réduis le style pour que le chat reste lisible sur mobile » | `public/styles.css` : 15 lignes modifiées | Accepté. Le changement est utile et ciblé. |
+| 6 | « Ajoute un message vide de contrôle et un message de 301 caractères pour tester la limite » | `public/js/app.js` : ajout d'une condition et d'un test | Accepté. C'est une validation utile avant la limite de 300 caractères. |
+| 7 | « Si le message est vide, affiche un message explicite sans l'envoyer » | `public/js/app.js` : 8 lignes ; aucun autre fichier | Accepté. C'est le comportement attendu. |
+| 8 | « Affiche les messages de l'utilisateur et du bot dans des bulles séparées » | `public/index.html` + `public/styles.css` + `public/js/app.js` | Accepté. La séparation aide à la lecture. |
+| 9 | « Ajoute le support des mots-clés “film” et “horaire” dans la logique du message » | `public/js/app.js` : logique ciblée | Accepté. C'est une vraie avancée fonctionnelle sans surcharger le code. |
+| 10 | « Garde la logique simple et mets de côté le stockage persistant tant que la base ne marche pas » | `public/js/app.js` : logique minimale | Accepté. La règle “petits pas” reste prioritaire. |
 
 ### J1-08 · 🔎 Revue de la page — [fiche](checkpoints/J1-08-revue-de-la-page.md)
 

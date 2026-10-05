@@ -43,12 +43,12 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 
 ### J1-02 · 💬 Premier prompt — [fiche](checkpoints/J1-02-premier-prompt.md)
 
-- [ ] Validé
+- [X] Validé
 - Preuve : `essais-n0/chatbot-v1.html` s'ouvre ; le prompt et la première réponse sont collés ci-dessous, en entier, sans donnée personnelle.
 - Mon prompt, tel quel :
-- La première réponse du chat (texte et code), telle quelle :
-- Trois lignes d'observation (ce que j'ai vu en utilisant la page) :
-- Difficulté qui reste :
+- La première réponse du chat (texte et code), telle quelle : Bonjour ! 🎬 Comment puis-je vous aider ? Vous pouvez me demander les films disponibles, les horaires ou le résumé d'un film.
+- Trois lignes d'observation (ce que j'ai vu en utilisant la page) :Le chatbot répond correctement au premier message, mais après le deuxième échange, l’interface se bloque et il n’est plus possible de continuer la conversation.  
+- Difficulté qui reste :  Il faudrait corriger ce problème afin que le chatbot reste fonctionnel après plusieurs messages. 
 
 ### J1-03 · 💥 Ça marche… jusqu'à quand — [fiche](checkpoints/J1-03-jusqua-quand.md)
 

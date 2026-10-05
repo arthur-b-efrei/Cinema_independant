@@ -18,16 +18,16 @@ Rôles de départ et moments d'échange :
 
 Recopiez les valeurs telles que le formateur vous les a remises. Ne les changez pas, ne les échangez pas avec un autre binôme.
 
-- Limite de caractères d'un message (le nombre N) :
+- Limite de caractères d'un message (le nombre N) : 300
 - Premier mot reconnu, en plus de « salut », « aide » et « test » :
-- Second mot reconnu :
+- Second mot reconnu :"film" "horraires" "résumer"
 
 ## Commandes essayées
 
 Notez le dossier de lancement, la commande et sa sortie exacte, surtout quand un outil a bloqué.
 
 - Dossier :
-- Commande et résultat :
+- Commande et résultat : dsh web -> "Serveur démarré"
 
 Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est réunie, collez la preuve (texte, commande ou phrase), puis notez ce que vous avez prédit, essayé, observé, et une difficulté qui reste.
 

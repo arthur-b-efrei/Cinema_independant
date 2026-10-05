@@ -191,41 +191,49 @@ Pour chaque checkpoint : cochez la case quand toute la preuve de la fiche est r�
 | 1 | « Crée le squelette HTML d'un chat avec `form#chat-form`, `textarea#message`, `ul#messages` et `p#status` » | `public/index.html` : 18 lignes ; aucun fichier inutile | Accepté. Les identifiants sont bons et la structure est claire. |
 | 2 | « Ajoute trois boutons de suggestions pour films, horaires et résumé » | `public/index.html` + `public/styles.css` : boutons visibles, pas de logique métier | Accepté. Cela aide à tester rapidement le comportement attendu. |
 | 3 | « Écris le JavaScript minimal pour empêcher le rechargement et mettre le statut “Interface prête.” » | `public/js/app.js` : 20 lignes, aucune logique métier | Accepté. Le code reste simple et conforme à la consigne. |
-| 4 | « Corrige le bouton de suggestion : il doit être un vrai bouton et non un `div` » | `public/index.html` : 1 ligne modifiée | Accepté. J'ai refusé l'ancienne solution pour garder la sémantique HTML. |
-| 5 | « Réduis le style pour que le chat reste lisible sur mobile » | `public/styles.css` : 15 lignes modifiées | Accepté. Le changement est utile et ciblé. |
-| 6 | « Ajoute un message vide de contrôle et un message de 301 caractères pour tester la limite » | `public/js/app.js` : ajout d'une condition et d'un test | Accepté. C'est une validation utile avant la limite de 300 caractères. |
-| 7 | « Si le message est vide, affiche un message explicite sans l'envoyer » | `public/js/app.js` : 8 lignes ; aucun autre fichier | Accepté. C'est le comportement attendu. |
-| 8 | « Affiche les messages de l'utilisateur et du bot dans des bulles séparées » | `public/index.html` + `public/styles.css` + `public/js/app.js` | Accepté. La séparation aide à la lecture. |
-| 9 | « Ajoute le support des mots-clés “film” et “horaire” dans la logique du message » | `public/js/app.js` : logique ciblée | Accepté. C'est une vraie avancée fonctionnelle sans surcharger le code. |
-| 10 | « Garde la logique simple et mets de côté le stockage persistant tant que la base ne marche pas » | `public/js/app.js` : logique minimale | Accepté. La règle “petits pas” reste prioritaire. |
+| 4 | « Empêche uniquement les mots très longs de faire déborder `#messages` à 360 px ; modifie seulement `styles.css`. » | `public/styles.css` : 1 ligne ajoutée, aucun autre fichier | Accepté. Le débordement passe de 210 px à 0 px. |
+| 5 | « Dans `app.js`, ajoute “Vous : message”, refuse le vide, garde `<b>gras</b>` comme texte et conserve les boutons de questions. » | `public/js/app.js` : +23/-1 ; aucun changement non demandé | Accepté. L'envoi, le refus visible et `textContent` fonctionnent. |
+| 6 | « Crée `brain.js` avec `validateMessage` et `replyTo`, puis sers-le dans `server/app.js` ; “tester” ne doit pas déclencher “test”. » | `brain.js` ajouté et `server/app.js` modifié : +32/-2 | Accepté. Le cerveau ne contient ni `document`, ni `window`, ni stockage. |
+| 7 | « Importe le cerveau dans `app.js`, utilise son erreur et ajoute “Cap Web : réponse” après le message utilisateur. » | `public/js/app.js` : +13/-6 ; aucun autre fichier | Accepté. Les réponses de salut, bonjour, aide, test et le repli sont branchés. |
+| 8 | « Dans `brain.js`, ajoute les mots “film” et “horraires” et la limite unique de 300 caractères ; aligne le libellé HTML. » | `brain.js` et `index.html` : +12/-1 | Accepté. 300 caractères passent, 301 sont refusés et les deux mots ont une réponse propre. |
+| 9 | « Planifie puis crée `view.js` avec `renderMessages`, allège `app.js` et sers le nouveau module. » | `app.js`, `view.js` et `server/app.js` : +19/-9 | Accepté. `app.js` ne crée plus de `li` et l'affichage utilise uniquement `textContent`. |
+| 10 | « Ajoute la mémoire `capweb.historique`, la récupération d'un JSON abîmé et le bouton `#effacer` avec confirmation. » | `app.js` et `index.html` : +46/-1 | Accepté. F5 conserve l'historique ; annuler garde tout et confirmer vide l'affichage et le stockage. |
 
 ### J1-08 · 🔎 Revue de la page — [fiche](checkpoints/J1-08-revue-de-la-page.md)
 
-- [ ] Validé
-- Preuve (trois défauts, un corrigé avec son avant et son après, diff relu, revue adverse vérifiée) :
+- [X] Validé
+- Preuve (trois défauts, un corrigé avec son avant et son après, diff relu, revue adverse vérifiée) : trois défauts ont été constatés dans le code et dans le navigateur. Le débordement du mot long a été mesuré à 360 px, corrigé par une seule ligne de CSS, puis mesuré de nouveau. `npm test` réussit avec 9 tests sur 9 et la correction est sauvegardée dans le commit `384162c`.
 - Mes défauts, un par ligne :
 
   | Lentille (structure, clavier, écrans) | Où (élément ou fichier) | Comment je l'ai vu |
   |---|---|---|
-  | | | |
-  | | | |
-  | | | |
+  | Structure | `public/index.html`, lignes 9 à 23 | Seul le repère `main` existe : `header`, `section` et `footer` sont absents. Je l'ai vérifié dans le fichier et dans la structure du navigateur. |
+  | Clavier | `public/index.html`, dans `form#chat-form` | Les trois boutons de questions annoncés en J1-07 sont absents. La touche Tab ne peut donc atteindre que le champ et le bouton « Envoyer ». |
+  | Écrans | `public/styles.css`, règle `#messages` | À 360 px, l'ajout d'un mot de 60 lettres dans la liste faisait passer la largeur du document de 360 à 570 px, soit 210 px de débordement horizontal. |
 
 - La revue adverse : trois affirmations de l'agent, la référence qu'il a donnée (fichier, ligne), mon verdict (vrai, faux, rejeté sans référence) et comment j'ai vérifié :
-- Le défaut corrigé : l'avant (capture ou valeur), ma demande ciblée (copiée), le diff relu (fichiers, lignes, changement non demandé ?), l'après (même geste, même mesure) :
-- Difficulté qui reste :
+  1. « Les repères `header`, `section` et `footer` manquent dans `public/index.html`, lignes 9 à 23. » Verdict : **vrai** ; une recherche dans le fichier ne trouve que `main`.
+  2. « Le `label` n'est pas relié au champ dans `public/index.html`, lignes 16 à 18. » Verdict : **faux** ; `for="message"` correspond exactement à `id="message"`.
+  3. « Un mot très long déborde parce que la règle `#messages` de `public/styles.css`, lignes 17 à 22, ne permet pas de couper le mot. » Verdict : **vrai** ; la mesure à 360 px indiquait 210 px de débordement.
+- Le défaut corrigé :
+  - Avant : à 360 px, après insertion de `<li>Vous : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</li>`, `scrollWidth - clientWidth` valait `210`.
+  - Ma demande ciblée : « **RÔLE :** tu es développeur CSS. **TÂCHE :** empêche uniquement les mots très longs de faire déborder la liste `#messages` à 360 px. **CONTRAINTES :** modifie seulement `public/styles.css` et n'ajoute pas `overflow: hidden` sur `html` ou `body`. **FORMAT :** donne le diff puis une phrase expliquant comment refaire la mesure. **CONTRE-EXEMPLE :** cacher le débordement horizontal sans couper le mot est refusé. **CRITÈRE D'ARRÊT :** dès que ce seul débordement est corrigé, arrête-toi. »
+  - Diff relu : un seul fichier, `public/styles.css` ; une ligne ajoutée, `overflow-wrap: anywhere;` ; aucun changement non demandé. Verdict : accepté.
+  - Après : avec la même largeur et le même mot, `scrollWidth - clientWidth` vaut `0`.
+- Difficulté qui reste : le carnet J1-07 annonce trois boutons de questions, mais ils ne sont pas présents dans la version actuelle de `public/index.html`. Il faudra les ajouter avant J1-09.
 
 ### J1-09 · 🧠 Un cerveau à règles, par prompts — [fiche](checkpoints/J1-09-cerveau-a-regles.md)
 
-- [ ] Validé
-- Preuve (comportements vérifiés : « Vous : … », message vide, `<b>gras</b>`, mes deux mots, ma limite ; `/js/brain.js` et `/js/view.js` affichés ; F5 ; « Effacer ») :
+- [X] Validé
+- Preuve (comportements vérifiés : « Vous : … », message vide, `<b>gras</b>`, mes deux mots, ma limite ; `/js/brain.js` et `/js/view.js` affichés ; F5 ; « Effacer ») : « SALUT » entouré d'espaces affiche « Vous : SALUT » puis la réponse de Cap Web ; le vide est refusé avec un statut ; `<b>gras</b>` apparaît avec ses chevrons. « film » et « HORRAIRES » ont chacun une réponse propre. La vérification directe de `validateMessage` renvoie `true` pour 300 caractères et `false` pour 301. Les trois modules sont servis, F5 conserve les messages, un historique abîmé repart vide et « Effacer » demande confirmation.
 - Mes six demandes et leurs verdicts : dans le journal des décisions ci-dessus.
 - Le rôle de chaque fichier, en une phrase chacun :
-  - `app.js` :
-  - `brain.js` :
-  - `view.js` :
-- Ce que j'ai vu quand j'ai mis `{pas du json` dans la mémoire :
-- Difficulté qui reste :
+  - `app.js` : relie le formulaire, le cerveau, l'affichage et la mémoire de la conversation.
+  - `brain.js` : valide les messages et choisit une réponse à partir de règles, sans accéder à la page.
+  - `view.js` : transforme le tableau d'historique en éléments `li` affichés avec `textContent`.
+- Plan de rangement relu avant l'écriture : 1. créer `renderMessages` dans `view.js` ; 2. garder l'historique dans `app.js` ; 3. remplacer la création directe des `li` par le rendu ; 4. servir `view.js` ; 5. vérifier que le comportement reste identique. Correction demandée au plan : aucun stockage dans `view.js` et aucune règle de réponse hors de `brain.js`.
+- Ce que j'ai vu quand j'ai mis `{pas du json` dans la mémoire : après rechargement, la page ne plante pas, la conversation repart vide, la clé invalide est supprimée et le statut affiche « Historique illisible : la conversation repart vide. »
+- Difficulté qui reste : le mot du cahier est écrit « horraires » avec deux `r` ; la règle respecte cette valeur exacte, mais « horaires » correctement orthographié reçoit encore la réponse de repli.
 
 ### J1-10 · 🧪 Épreuve de l'explication — [fiche](checkpoints/J1-10-epreuve-explication.md)
 
